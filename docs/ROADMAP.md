@@ -14,7 +14,7 @@ bajar y, con unas semanas de datos, se reajusta a tu gasto real.
 
 | Fase | Contenido | Estado |
 |---|---|---|
-| 1 | Cimientos y despliegue | En curso: código listo; falta la instalación en el servidor |
+| 1 | Cimientos y despliegue | En curso: desplegada; falta la prueba en el móvil |
 | 2 | Diario manual | Pendiente |
 | 3 | Perfil y objetivo calórico | Pendiente |
 | 4 | Peso y progreso | Pendiente |
@@ -157,11 +157,11 @@ prueba en real.
 ### Criterios de aceptación
 
 - [x] `make check` pasa en un checkout limpio.
-- [ ] `make deploy` publica la app en el subdominio con HTTPS; sin sesión solo
+- [x] `make deploy` publica la app en el subdominio con HTTPS; sin sesión solo
       se ve el login.
 - [ ] La app se instala en la pantalla de inicio del móvil, abre a pantalla
       completa y mantiene la sesión.
-- [ ] El backup diario se genera en el servidor y `make backup-pull` lo baja al
+- [x] El backup diario se genera en el servidor y `make backup-pull` lo baja al
       Mac.
 
 Verificado en local (30-09-2026): `make check` en un clon limpio; en vista
@@ -169,9 +169,13 @@ móvil, login (error y redirección a `next`), navegación inferior, cierre de
 sesión y registro del service worker; la imagen de producción con
 `make container-check`, el script de usuario dentro del contenedor, la cookie
 de 180 días renovada en cada petición, la revocación de sesiones al cambiar la
-contraseña y el script de backup sobre un árbol simulado. Los tres criterios
-pendientes necesitan la instalación inicial con `sudo` en el servidor
-(`docs/DEPLOY.md`, §2) y la prueba en el móvil.
+contraseña y el script de backup sobre un árbol simulado.
+
+Instalada en `remote` el 30-09-2026 (`docs/DEPLOY.md`, §2): HTTPS con Certbot,
+HTTP redirige a HTTPS y, sin sesión, cualquier ruta lleva al login. El timer
+de backup está activo, el primer backup se exportó y `make backup-pull` lo
+bajó a `~/Backups/calorias` y pasó `integrity_check`. Falta instalar la app en
+el móvil y comprobar la pantalla completa y la sesión.
 
 ---
 
