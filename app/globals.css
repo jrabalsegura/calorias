@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  background: #f7f7f4;
+  color: #172026;
+}
+
+html {
+  min-height: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  min-height: 100dvh;
+  margin: 0;
+  background: #f7f7f4;
+  color: #172026;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+@layer components {
+  .field-label {
+    @apply grid gap-2 text-sm font-medium text-ink;
+  }
+
+  /* 16px text keeps iOS Safari from zooming in when the field is focused. */
+  .field-input {
+    @apply h-12 w-full min-w-0 rounded-lg border border-line bg-white px-3 text-base text-ink outline-none focus:border-accent focus:ring-2 focus:ring-accent/20;
+  }
+
+  .primary-button {
+    @apply inline-flex h-12 items-center justify-center rounded-lg bg-accent px-4 text-base font-semibold text-white transition active:scale-[0.98] disabled:opacity-60;
+  }
+
+  .secondary-button {
+    @apply inline-flex h-12 items-center justify-center rounded-lg border border-line bg-white px-4 text-base font-semibold text-ink transition active:scale-[0.98];
+  }
+}

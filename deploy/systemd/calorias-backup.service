@@ -1,0 +1,11 @@
+[Unit]
+Description=Backup de Calorías
+ConditionPathIsDirectory=/var/lib/calorias/data
+ConditionPathExists=/etc/calorias/app.env
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/calorias-backup
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7

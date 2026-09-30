@@ -1,0 +1,21 @@
+node_modules
+.next
+out
+dist
+coverage
+tsconfig.tsbuildinfo
+
+.env
+.container-data/
+*.db
+*.db-journal
+*.sqlite
+*.sqlite-journal
+*-shm
+*-wal
+
+.DS_Store
+npm-debug.log*
+
+# Claude Code (ajustes personales)
+.claude/settings.local.json
