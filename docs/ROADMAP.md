@@ -14,7 +14,7 @@ bajar y, con unas semanas de datos, se reajusta a tu gasto real.
 
 | Fase | Contenido | Estado |
 |---|---|---|
-| 1 | Cimientos y despliegue | En curso: desplegada; falta la prueba en el móvil |
+| 1 | Cimientos y despliegue | Hecha |
 | 2 | Diario manual | Pendiente |
 | 3 | Perfil y objetivo calórico | Pendiente |
 | 4 | Peso y progreso | Pendiente |
@@ -159,7 +159,7 @@ prueba en real.
 - [x] `make check` pasa en un checkout limpio.
 - [x] `make deploy` publica la app en el subdominio con HTTPS; sin sesión solo
       se ve el login.
-- [ ] La app se instala en la pantalla de inicio del móvil, abre a pantalla
+- [x] La app se instala en la pantalla de inicio del móvil, abre a pantalla
       completa y mantiene la sesión.
 - [x] El backup diario se genera en el servidor y `make backup-pull` lo baja al
       Mac.
@@ -174,8 +174,9 @@ contraseña y el script de backup sobre un árbol simulado.
 Instalada en `remote` el 30-09-2026 (`docs/DEPLOY.md`, §2): HTTPS con Certbot,
 HTTP redirige a HTTPS y, sin sesión, cualquier ruta lleva al login. El timer
 de backup está activo, el primer backup se exportó y `make backup-pull` lo
-bajó a `~/Backups/calorias` y pasó `integrity_check`. Falta instalar la app en
-el móvil y comprobar la pantalla completa y la sesión.
+bajó a `~/Backups/calorias` y pasó `integrity_check`; `make backup-schedule`
+lo repite a diario. Probada en el móvil: se instala, abre a pantalla completa y
+mantiene la sesión.
 
 ---
 
