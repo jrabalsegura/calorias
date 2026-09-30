@@ -1,0 +1,35 @@
+name: calorias
+
+services:
+  app:
+    image: calorias:local
+    build:
+      context: .
+      dockerfile: deploy/containers/app.Containerfile
+    user: "${CALORIAS_UID:-10002}:${CALORIAS_GID:-10002}"
+    environment:
+      AUTH_SECRET: "${CONTAINER_AUTH_SECRET:-local-container-test-secret-do-not-use-in-production}"
+      DATABASE_URL: "file:/data/calorias.db"
+      SESSION_COOKIE_SECURE: "false"
+      TZ: "Europe/Madrid"
+    ports:
+      - "127.0.0.1:${CALORIAS_HTTP_PORT:-3091}:3000"
+    volumes:
+      - ./.container-data:/data
+    init: true
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,mode=1777
+      - /app/.next/cache:size=64m,mode=1777
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    stop_signal: SIGTERM
+    stop_grace_period: 30s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

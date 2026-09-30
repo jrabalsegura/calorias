@@ -1,0 +1,46 @@
+{
+  "name": "calorias",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "node scripts/start.mjs --dev",
+    "build": "next build",
+    "start": "node scripts/start.mjs",
+    "test": "node --import tsx --test \"src/**/*.test.ts\" \"tests/*.test.ts\"",
+    "typecheck": "tsc --noEmit",
+    "prisma:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:studio": "prisma studio",
+    "user:create": "node --import tsx scripts/create-user.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.19.3",
+    "next": "^16.3.8",
+    "prisma": "^6.19.3",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "tsx": "^4.19.4"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.30",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.19",
+    "typescript": "^5.8.3"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "allowScripts": {
+    "@prisma/client": true,
+    "@prisma/engines": true,
+    "esbuild": true,
+    "fsevents": true,
+    "prisma": true
+  },
+  "overrides": {
+    "deepmerge-ts": "^8.0.2"
+  }
+}
