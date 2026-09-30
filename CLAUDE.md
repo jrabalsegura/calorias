@@ -1,7 +1,7 @@
 # Calorías
 
 App web personal (un único usuario) para contar calorías y bajar peso. PWA
-mobile-first. Next.js 15 (App Router, server actions) + React 19 + Prisma 6 +
+mobile-first. Next.js 16 (App Router, server actions) + React 19 + Prisma 6 +
 SQLite + Tailwind 3. Interfaz y mensajes en español; identificadores de código
 en inglés.
 
@@ -34,7 +34,7 @@ Un test concreto: `node --import tsx --test --test-name-pattern "session" tests/
 - `app/(app)/`: pantallas con la barra inferior (*Hoy* `/`, *Peso* `/weight`,
   *Resumen* `/summary`, *Ajustes* `/settings`). `app/login/` va sin barra.
 - `app/**/actions.ts`: server actions.
-- `middleware.ts` (runtime Node): valida la cookie firmada y `sessionVersion`
+- `proxy.ts` (el antiguo middleware; runtime Node): valida la cookie firmada y `sessionVersion`
   contra la BD en cada petición y la renueva (sesión deslizante de 180 días).
   Las rutas públicas (login, health, manifest, iconos, `sw.js`) están en
   `PUBLIC_PATH_PREFIXES`.

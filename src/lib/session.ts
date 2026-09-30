@@ -1,5 +1,5 @@
 export const SESSION_COOKIE_NAME = "calorias_session";
-// Long sliding session: the middleware renews it on every request, so the
+// Long sliding session: proxy.ts renews it on every request, so the
 // installed app on the phone only asks for the password after months unused.
 export const SESSION_DURATION_SECONDS = 60 * 60 * 24 * 180;
 
