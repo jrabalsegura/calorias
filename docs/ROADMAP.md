@@ -14,7 +14,7 @@ bajar y, con unas semanas de datos, se reajusta a tu gasto real.
 
 | Fase | Contenido | Estado |
 |---|---|---|
-| 1 | Cimientos y despliegue | Pendiente |
+| 1 | Cimientos y despliegue | En curso: código listo; falta la instalación en el servidor |
 | 2 | Diario manual | Pendiente |
 | 3 | Perfil y objetivo calórico | Pendiente |
 | 4 | Peso y progreso | Pendiente |
@@ -156,13 +156,22 @@ prueba en real.
 
 ### Criterios de aceptación
 
-- [ ] `make check` pasa en un checkout limpio.
+- [x] `make check` pasa en un checkout limpio.
 - [ ] `make deploy` publica la app en el subdominio con HTTPS; sin sesión solo
       se ve el login.
 - [ ] La app se instala en la pantalla de inicio del móvil, abre a pantalla
       completa y mantiene la sesión.
 - [ ] El backup diario se genera en el servidor y `make backup-pull` lo baja al
       Mac.
+
+Verificado en local (30-09-2026): `make check` en un clon limpio; en vista
+móvil, login (error y redirección a `next`), navegación inferior, cierre de
+sesión y registro del service worker; la imagen de producción con
+`make container-check`, el script de usuario dentro del contenedor, la cookie
+de 180 días renovada en cada petición, la revocación de sesiones al cambiar la
+contraseña y el script de backup sobre un árbol simulado. Los tres criterios
+pendientes necesitan la instalación inicial con `sudo` en el servidor
+(`docs/DEPLOY.md`, §2) y la prueba en el móvil.
 
 ---
 
@@ -510,8 +519,8 @@ tiendas. El modelo de datos no les cierra la puerta.
 
 | Decisión | Cuándo |
 |---|---|
-| Subdominio y puerto definitivos (propuesta: `calorias.joserabalsegura.com` y 3090; comprobar con `ss -ltn` en el servidor) | Fase 1 |
-| Nombre e icono de la app | Fase 1 (provisional), fase 10 |
+| ~~Subdominio y puerto definitivos~~: `calorias.joserabalsegura.com` (ya resuelve al servidor) y 3090 (libre según `ss -ltn`) | Fase 1 (decidido) |
+| Nombre e icono de la app: provisionales «Calorías» y un plato blanco sobre verde | Fase 10 |
 | Librería de gráficas (Recharts o SVG propio) | Fase 4 |
 | Formato del histórico de peso a importar | Fase 4 |
 | Modelo de IA definitivo, según calidad y coste medidos | Fases 7-8 |
