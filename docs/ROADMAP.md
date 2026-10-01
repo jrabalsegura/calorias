@@ -15,7 +15,7 @@ bajar y, con unas semanas de datos, se reajusta a tu gasto real.
 | Fase | Contenido | Estado |
 |---|---|---|
 | 1 | Cimientos y despliegue | Hecha |
-| 2 | Diario manual | Pendiente |
+| 2 | Diario manual | Falta probarla en el móvil |
 | 3 | Perfil y objetivo calórico | Pendiente |
 | 4 | Peso y progreso | Pendiente |
 | 5 | Biblioteca de alimentos y cantidades | Pendiente |
@@ -206,8 +206,22 @@ enganchan los demás métodos.
 ### Criterios de aceptación
 
 - [ ] Se puede registrar un día real completo desde el móvil sin fricción.
-- [ ] Los totales por comida y por día son correctos (tests de dominio).
-- [ ] El cambio de día respeta `Europe/Madrid`, también cerca de medianoche.
+- [x] Los totales por comida y por día son correctos (tests de dominio).
+- [x] El cambio de día respeta `Europe/Madrid`, también cerca de medianoche.
+
+Verificado en local (01-10-2026): `make check` en verde. Tests de dominio en
+`src/domain/` para totales (por comida, por día y al mover una entrada),
+validación de la entrada rápida, comida según la hora y fechas en Madrid
+(medianoche en horario de verano y de invierno, noche del cambio de hora,
+fechas inválidas y aritmética de días). En vista móvil (375 px): alta desde el
+botón flotante con la comida preseleccionada por la hora y desde el «+» de cada
+comida, entrada sin nombre, error de validación conservando lo escrito, kcal
+con decimales, editar, mover a otra comida, borrar con confirmación, día
+anterior, selector de fecha, «Volver a hoy» y fecha no válida en `?day=`. Si
+la app instalada sigue abierta al pasar la medianoche, al volver a primer
+plano (o en el siguiente minuto) se recarga con el día nuevo.
+
+Falta registrar un día real completo desde el móvil tras `make deploy`.
 
 ---
 

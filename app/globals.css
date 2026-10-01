@@ -39,3 +39,24 @@ body {
     @apply inline-flex h-12 items-center justify-center rounded-lg border border-line bg-white px-4 text-base font-semibold text-ink transition active:scale-[0.98];
   }
 }
+
+/* Bottom sheet built on <dialog>: showModal() gives focus trapping, Escape
+   and the backdrop for free. */
+.entry-sheet {
+  inset: auto 0 0;
+  width: 100%;
+  max-width: 32rem;
+  max-height: calc(100dvh - env(safe-area-inset-top) - 1rem);
+  margin: 0 auto;
+  padding: 0 0 env(safe-area-inset-bottom);
+  overflow-y: auto;
+  border: 0;
+  border-radius: 1rem 1rem 0 0;
+  background: #fff;
+  color: #172026;
+  box-shadow: 0 -8px 30px rgb(0 0 0 / 0.15);
+}
+
+.entry-sheet::backdrop {
+  background: rgb(23 32 38 / 0.45);
+}
