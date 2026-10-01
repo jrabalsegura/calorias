@@ -15,3 +15,22 @@ model AppUser {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 }
+
+// One line of the food diary. Name and kcal are copies taken when the entry
+// is saved, so editing a food later never rewrites past days.
+model DiaryEntry {
+  id        String   @id @default(cuid())
+  day       String // YYYY-MM-DD in Europe/Madrid
+  meal      String // breakfast | midMorning | lunch | afternoonSnack | dinner | snack
+  name      String?
+  quantity  Float?
+  unit      String? // g | ml | portion name
+  kcal      Int
+  foodId    String? // Food arrives in phase 5; no relation until then
+  source    String   @default("manual") // manual | library | barcode | text | label
+  note      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([day])
+}

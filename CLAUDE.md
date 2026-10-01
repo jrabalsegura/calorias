@@ -34,6 +34,9 @@ Un test concreto: `node --import tsx --test --test-name-pattern "session" tests/
 - `app/(app)/`: pantallas con la barra inferior (*Hoy* `/`, *Peso* `/weight`,
   *Resumen* `/summary`, *Ajustes* `/settings`). `app/login/` va sin barra.
 - `app/**/actions.ts`: server actions.
+- Diario (*Hoy*): `/` muestra hoy y `/?day=YYYY-MM-DD` otro día.
+  `DiaryEntry` guarda copia del nombre y las kcal; las comidas y sus ids están
+  en `src/domain/meals.ts` y las fechas de Madrid en `src/domain/day.ts`.
 - `proxy.ts` (el antiguo middleware; runtime Node): valida la cookie firmada y `sessionVersion`
   contra la BD en cada petición y la renueva (sesión deslizante de 180 días).
   Las rutas públicas (login, health, manifest, iconos, `sw.js`) están en
