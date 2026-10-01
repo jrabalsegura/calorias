@@ -15,7 +15,7 @@ bajar y, con unas semanas de datos, se reajusta a tu gasto real.
 | Fase | Contenido | Estado |
 |---|---|---|
 | 1 | Cimientos y despliegue | Hecha |
-| 2 | Diario manual | Falta probarla en el móvil |
+| 2 | Diario manual | Hecha |
 | 3 | Perfil y objetivo calórico | Pendiente |
 | 4 | Peso y progreso | Pendiente |
 | 5 | Biblioteca de alimentos y cantidades | Pendiente |
@@ -205,7 +205,7 @@ enganchan los demás métodos.
 
 ### Criterios de aceptación
 
-- [ ] Se puede registrar un día real completo desde el móvil sin fricción.
+- [x] Se puede registrar un día real completo desde el móvil sin fricción.
 - [x] Los totales por comida y por día son correctos (tests de dominio).
 - [x] El cambio de día respeta `Europe/Madrid`, también cerca de medianoche.
 
@@ -221,7 +221,8 @@ anterior, selector de fecha, «Volver a hoy» y fecha no válida en `?day=`. Si
 la app instalada sigue abierta al pasar la medianoche, al volver a primer
 plano (o en el siguiente minuto) se recarga con el día nuevo.
 
-Falta registrar un día real completo desde el móvil tras `make deploy`.
+Desplegada en `remote` el 01-10-2026 (`c68c634`, smoke test local y por
+HTTPS correctos) y probada en el móvil.
 
 ---
 
