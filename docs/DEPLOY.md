@@ -68,6 +68,13 @@ Contenido de `app.env` (genera el secreto con `openssl rand -hex 32`):
 ```dotenv
 DATABASE_URL=file:/data/calorias.db
 AUTH_SECRET=PEGA_AQUI_EL_SECRETO
+# IA (fase 7). Sin la clave, la app funciona igual pero sin descripción en texto.
+ANTHROPIC_API_KEY=PEGA_AQUI_LA_CLAVE
+# Opcionales: modelo (por defecto claude-sonnet-5-5), esfuerzo (por defecto
+# low) y workspace, solo si la clave no pertenece a uno.
+# ANTHROPIC_MODEL=claude-sonnet-5-5
+# ANTHROPIC_EFFORT=low
+# ANTHROPIC_WORKSPACE_ID=wrkspc_...
 ```
 
 ### Imagen, Quadlet y arranque

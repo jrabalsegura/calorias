@@ -4,13 +4,30 @@
     {
       "name": "dev",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
       "port": 3000
     },
     {
       "name": "container",
       "url": "http://127.0.0.1:3091",
       "port": 3091
+    },
+    {
+      "name": "dev-e2e",
+      "runtimeExecutable": "env",
+      "runtimeArgs": [
+        "DATABASE_URL=file:./e2e.db",
+        "npm",
+        "run",
+        "dev",
+        "--",
+        "-p",
+        "3002"
+      ],
+      "port": 3002
     }
   ]
 }

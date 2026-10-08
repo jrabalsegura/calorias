@@ -53,6 +53,10 @@ Un test concreto: `node --import tsx --test --test-name-pattern "session" tests/
   (fixtures en `tests/fixtures/off/`), petición en `src/lib/openFoodFacts.ts`.
   `BarcodeScanner` usa el `BarcodeDetector` nativo o el polyfill, cuyo wasm
   se sirve desde `public/zxing/` (cópialo al actualizar `barcode-detector`).
+- IA (`/add/text`): prompt, esquema JSON, validación y líneas en
+  `src/domain/textEstimate.ts`; precios y gasto en `src/domain/aiUsage.ts`;
+  la llamada (`requestJson`, que registra cada `AiCall`) en `src/lib/claude.ts`.
+  `scripts/eval-text.ts` pasa las descripciones de prueba contra la API real.
 - `proxy.ts` (el antiguo middleware; runtime Node): valida la cookie firmada y `sessionVersion`
   contra la BD en cada petición y la renueva (sesión deslizante de 180 días).
   Las rutas públicas (login, health, manifest, iconos, `sw.js`) están en
