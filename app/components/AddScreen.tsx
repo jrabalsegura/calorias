@@ -16,8 +16,16 @@ import { mealLabel, type Meal } from "@/domain/meals";
 import type { LibraryFood } from "@/lib/foods";
 import { EntrySheet, type SheetTarget } from "./EntrySheet";
 import { FoodEntrySheet, type FoodSheetTarget } from "./FoodEntrySheet";
-import { BoltIcon, CloseIcon, PlusIcon, RepeatIcon, SearchIcon, StarIcon } from "./icons";
-import { addHref, diaryHref } from "./links";
+import {
+  BarcodeIcon,
+  BoltIcon,
+  CloseIcon,
+  PlusIcon,
+  RepeatIcon,
+  SearchIcon,
+  StarIcon
+} from "./icons";
+import { addHref, diaryHref, scanHref } from "./links";
 import { PageHeader } from "./PageHeader";
 
 const SEARCH_LIMIT = 40;
@@ -127,6 +135,12 @@ export function AddScreen({
         )
       ) : (
         <>
+          <Link className="secondary-button w-full gap-2" href={scanHref(day, meal)}>
+            <span className="text-accent">
+              <BarcodeIcon />
+            </span>
+            Escanear código de barras
+          </Link>
           <div className="grid grid-cols-3 gap-2">
             <ShortcutButton
               icon={<BoltIcon />}

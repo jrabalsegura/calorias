@@ -11,7 +11,7 @@ import {
   type FoodFormValues
 } from "@/domain/food";
 import type { LibraryFood } from "@/lib/foods";
-import { saveFood, setFoodArchived } from "../(app)/foods/actions";
+import { saveFood, setFoodArchived, type ScannedProductData } from "../(app)/foods/actions";
 import { CloseIcon, StarIcon } from "./icons";
 import { decimalText } from "./QuantityPicker";
 
@@ -24,11 +24,17 @@ const EMPTY_PORTION = { name: "", amount: "" };
 export function FoodForm({
   food,
   initialName,
+  initialValues,
+  scanned,
   next
 }: {
   food: LibraryFood | null;
   initialName: string;
-  /** Where to go after creating it; the new food's id is added as ?food=. */
+  /** Values to start a new food with (a scanned product). */
+  initialValues?: FoodFormValues;
+  /** The barcode (and data) a new food was scanned with. */
+  scanned?: ScannedProductData;
+  /** Where to go after saving it; the food's id is added as ?food=. */
   next: string | null;
 }) {
   const router = useRouter();
@@ -44,7 +50,13 @@ export function FoodForm({
             amount: decimalText(amount)
           }))
         }
-      : { name: initialName, brand: "", baseUnit: "g", kcalPer100: "", portions: [] }
+      : (initialValues ?? {
+          name: initialName,
+          brand: "",
+          baseUnit: "g",
+          kcalPer100: "",
+          portions: []
+        })
   );
   const [favorite, setFavorite] = useState(food?.favorite ?? false);
   const [error, setError] = useState<string | null>(null);
@@ -66,7 +78,7 @@ export function FoodForm({
   function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     startTransition(async () => {
-      const result = await saveFood(food?.id ?? null, values, favorite);
+      const result = await saveFood(food?.id ?? null, values, favorite, scanned);
       if ("error" in result) {
         setError(result.error);
         return;
@@ -78,6 +90,7 @@ export function FoodForm({
   }
 
   const unit = values.baseUnit === "ml" ? "ml" : "g";
+  const barcode = food?.barcode ?? scanned?.barcode ?? null;
 
   return (
     <form className="grid gap-4" noValidate onSubmit={onSubmit}>
@@ -150,6 +163,12 @@ export function FoodForm({
             </span>
           </span>
         </label>
+
+        {barcode ? (
+          <p className="text-sm text-muted">
+            Código de barras <span className="tabular-nums text-ink">{barcode}</span>
+          </p>
+        ) : null}
       </section>
 
       <section aria-labelledby="portions-title" className="grid gap-3 rounded-lg border border-line bg-white p-4">

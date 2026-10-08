@@ -73,6 +73,7 @@ model Food {
   proteinPer100 Float?
   carbsPer100   Float?
   fatPer100     Float?
+  imageUrl      String? // product photo of Open Food Facts
   source        String        @default("manual") // manual | barcode | text | label
   favorite      Boolean       @default(false)
   archived      Boolean       @default(false)

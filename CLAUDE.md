@@ -48,6 +48,11 @@ Un test concreto: `node --import tsx --test --test-name-pattern "session" tests/
   en `src/lib/foods.ts`. *Añadir* (`/add`, con *Repetir* en `/add/repeat`) es
   la entrada a todos los métodos de registro; *Mis alimentos* en `/foods`.
   `QuantityPicker` y `FoodEntrySheet` son el selector de cantidad común.
+- Código de barras (`/add/scan`): normalización y flujo biblioteca → Open
+  Food Facts en `src/domain/barcode.ts`, mapeo de OFF en `src/domain/off.ts`
+  (fixtures en `tests/fixtures/off/`), petición en `src/lib/openFoodFacts.ts`.
+  `BarcodeScanner` usa el `BarcodeDetector` nativo o el polyfill, cuyo wasm
+  se sirve desde `public/zxing/` (cópialo al actualizar `barcode-detector`).
 - `proxy.ts` (el antiguo middleware; runtime Node): valida la cookie firmada y `sessionVersion`
   contra la BD en cada petición y la renueva (sesión deslizante de 180 días).
   Las rutas públicas (login, health, manifest, iconos, `sw.js`) están en

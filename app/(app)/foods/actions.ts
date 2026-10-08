@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { parseScanExtras } from "@/domain/barcode";
 import {
   foodFromEntry,
   isBaseUnit,
@@ -18,17 +19,40 @@ function portionRows(portions: FoodInput["portions"]) {
   return portions.map((portion, position) => ({ ...portion, position }));
 }
 
-/** Creates a food (without id) or replaces its values and portions. */
+/** What the scanner knows of a product the user creates by hand. */
+export type ScannedProductData = {
+  barcode: string;
+  imageUrl?: string | null;
+  proteinPer100?: number | null;
+  carbsPer100?: number | null;
+  fatPer100?: number | null;
+};
+
+/**
+ * Creates a food (without id) or replaces its values and portions. A new
+ * food can come with the barcode it was scanned with.
+ */
 export async function saveFood(
   id: string | null,
   values: FoodFormValues,
-  favorite: boolean
+  favorite: boolean,
+  scanned?: ScannedProductData
 ): Promise<{ error: string } | { id: string }> {
   await requireCurrentUser();
 
   const parsed = parseFoodInput(values);
   if (!parsed.ok) return { error: parsed.error };
   const { portions, ...data } = parsed.value;
+
+  const extras = scanned && !id ? parseScanExtras(scanned) : null;
+  if (scanned && !id && !extras) return { error: "El código de barras no es válido." };
+  if (extras) {
+    const other = await prisma.food.findUnique({
+      where: { barcode: extras.barcode },
+      select: { name: true }
+    });
+    if (other) return { error: `Ya tienes «${other.name}» con este código de barras.` };
+  }
 
   let savedId: string;
   if (id) {
@@ -47,8 +71,9 @@ export async function saveFood(
     const food = await prisma.food.create({
       data: {
         ...data,
+        ...extras,
         favorite,
-        source: "manual",
+        source: extras ? "barcode" : "manual",
         portions: { create: portionRows(portions) }
       },
       select: { id: true }

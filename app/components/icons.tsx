@@ -84,3 +84,21 @@ export function BoltIcon() {
     </Icon>
   );
 }
+
+export function BarcodeIcon() {
+  return (
+    <Icon>
+      <path d="M4 7V5a1 1 0 0 1 1-1h2M17 4h2a1 1 0 0 1 1 1v2M20 17v2a1 1 0 0 1-1 1h-2M7 20H5a1 1 0 0 1-1-1v-2" />
+      <path d="M8 8v8M11 8v8M14 8v8M16.5 8v8" />
+    </Icon>
+  );
+}
+
+export function FlashlightIcon({ on }: { on: boolean }) {
+  return (
+    <Icon fill={on ? "currentColor" : "none"}>
+      <path d="M8 3h8v4l-2 3v10a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1V10L8 7z" />
+      <path d="M8 7h8" />
+    </Icon>
+  );
+}

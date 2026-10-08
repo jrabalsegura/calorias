@@ -198,9 +198,15 @@ export function parseFoodInput(raw: FoodFormValues): FoodInputResult {
   };
 }
 
-/** The name copied into a diary entry: "Pan de molde (Bimbo)". */
+/**
+ * The name copied into a diary entry: "Pan de molde (Bimbo)", but just
+ * "Nutella" when the brand is already in the name.
+ */
 export function foodEntryName(food: { name: string; brand: string | null }): string {
-  const name = food.brand ? `${food.name} (${food.brand})` : food.name;
+  const name =
+    food.brand && !normalizeText(food.name).includes(normalizeText(food.brand))
+      ? `${food.name} (${food.brand})`
+      : food.name;
   return name.slice(0, MAX_ENTRY_NAME_LENGTH);
 }
 
