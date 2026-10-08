@@ -4,6 +4,7 @@ import { useState } from "react";
 import { minutesInMadrid } from "@/domain/day";
 import { formatKcal, type DiaryTotals } from "@/domain/diary";
 import { mealForMinutes, MEALS, type Meal } from "@/domain/meals";
+import { DayGoal } from "./DayGoal";
 import { EntrySheet, type SheetTarget } from "./EntrySheet";
 
 export type DiaryViewEntry = {
@@ -16,11 +17,14 @@ export type DiaryViewEntry = {
 export function DiaryView({
   day,
   entries,
-  totals
+  totals,
+  goalKcal
 }: {
   day: string;
   entries: DiaryViewEntry[];
   totals: DiaryTotals;
+  /** Daily kcal target, or null until the profile is filled in. */
+  goalKcal: number | null;
 }) {
   const [target, setTarget] = useState<SheetTarget | null>(null);
   // Remounts the sheet's form on every open so it never shows stale values.
@@ -33,16 +37,7 @@ export function DiaryView({
 
   return (
     <>
-      <section
-        aria-label="Total del día"
-        className="grid gap-1 rounded-lg border border-line bg-white px-4 py-4 text-center"
-      >
-        <p className="text-sm font-medium text-muted">Total del día</p>
-        <p className="text-4xl font-semibold tabular-nums text-ink">
-          {formatKcal(totals.total)}
-          <span className="ml-1 text-lg font-medium text-muted">kcal</span>
-        </p>
-      </section>
+      <DayGoal consumed={totals.total} target={goalKcal} />
 
       {MEALS.map(({ id: meal, label }) => {
         const mealEntries = entries.filter((entry) => entry.meal === meal);
@@ -104,9 +99,7 @@ export function DiaryView({
       <button
         aria-label="Añadir entrada"
         className="fixed bottom-[calc(5.25rem+env(safe-area-inset-bottom))] right-[max(1rem,calc(50vw-15rem))] z-10 grid h-14 w-14 place-items-center rounded-full bg-accent text-white shadow-lg transition active:scale-95"
-        onClick={() =>
-          open({ kind: "new", meal: mealForMinutes(minutesInMadrid()) })
-        }
+        onClick={() => open({ kind: "new", meal: mealForMinutes(minutesInMadrid()) })}
         type="button"
       >
         <PlusIcon />

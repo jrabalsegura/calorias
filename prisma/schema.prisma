@@ -34,3 +34,27 @@ model DiaryEntry {
 
   @@index([day])
 }
+
+// The single user's data for the calorie target. Only one row exists.
+model Profile {
+  id               String   @id @default("profile")
+  sex              String // female | male
+  birthDate        String // YYYY-MM-DD
+  heightCm         Float
+  activity         String // sedentary | light | moderate | active | veryActive
+  targetWeightKg   Float
+  pace             String // maintain | gentle | moderate | fast
+  manualTargetKcal Int? // overrides the calculated target when set
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+// One weigh-in per day. Phase 3 only stores the starting weight and the
+// weight entered in the profile; phase 4 adds the history and the trend.
+model WeightEntry {
+  id        String   @id @default(cuid())
+  day       String   @unique // YYYY-MM-DD in Europe/Madrid
+  kg        Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
