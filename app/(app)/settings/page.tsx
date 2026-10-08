@@ -29,7 +29,7 @@ export default async function SettingsPage() {
               today={today}
             />
             <p className="text-sm text-muted">
-              {formatKg(goal.profile.weightKg)} kg →{" "}
+              {formatKg(goal.profile.weightKg)} kg (tendencia) →{" "}
               {formatKg(goal.profile.targetWeightKg)} kg · actividad{" "}
               {ACTIVITY_LEVELS.find(
                 ({ id }) => id === goal.profile.activity

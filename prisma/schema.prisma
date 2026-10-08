@@ -49,8 +49,8 @@ model Profile {
   updatedAt        DateTime @updatedAt
 }
 
-// One weigh-in per day. Phase 3 only stores the starting weight and the
-// weight entered in the profile; phase 4 adds the history and the trend.
+// One weigh-in per day. The calorie target uses their trend
+// (src/domain/weight.ts), not the last value.
 model WeightEntry {
   id        String   @id @default(cuid())
   day       String   @unique // YYYY-MM-DD in Europe/Madrid

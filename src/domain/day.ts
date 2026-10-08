@@ -89,3 +89,33 @@ export function formatRelativeDay(day: string, today: string): string {
   const label = formatLongDay(day, today);
   return label.charAt(0).toUpperCase() + label.slice(1);
 }
+
+/** Whole days from `from` to `to` (negative when `to` is earlier). */
+export function daysBetween(from: string, to: string): number {
+  return Math.round((toUtcDate(to).getTime() - toUtcDate(from).getTime()) / 86_400_000);
+}
+
+/** 0 = Monday … 6 = Sunday. */
+export function weekdayIndex(day: string): number {
+  return (toUtcDate(day).getUTCDay() + 6) % 7;
+}
+
+const shortDate = new Intl.DateTimeFormat("es-ES", {
+  timeZone: "UTC",
+  weekday: "short",
+  day: "numeric",
+  month: "short"
+});
+
+const shortDateWithYear = new Intl.DateTimeFormat("es-ES", {
+  timeZone: "UTC",
+  day: "numeric",
+  month: "short",
+  year: "numeric"
+});
+
+/** "mié, 8 oct", or "8 oct 2025" when it is not the current year. */
+export function formatShortDay(day: string, today: string): string {
+  const format = day.slice(0, 4) === today.slice(0, 4) ? shortDate : shortDateWithYear;
+  return format.format(toUtcDate(day)).replace(/\./g, "");
+}

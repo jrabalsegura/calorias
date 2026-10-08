@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState, useTransition } from "react";
 import { formatKcal } from "@/domain/diary";
 import {
@@ -158,13 +159,9 @@ export function ProfileForm({
             />
           ) : null}
 
-          {fields.includes("weightKg") ? (
+          {fields.includes("weightKg") && wizard ? (
             <NumberField
-              hint={
-                wizard
-                  ? "Se guarda como tu primer pesaje."
-                  : "Si lo cambias, se guarda como el pesaje de hoy."
-              }
+              hint="Se guarda como tu primer pesaje."
               label="Peso actual"
               name="weightKg"
               onChange={(value) => set("weightKg", value)}
@@ -172,6 +169,21 @@ export function ProfileForm({
               unit="kg"
               value={values.weightKg}
             />
+          ) : null}
+
+          {/* After the wizard the weight is the trend of the weigh-ins in Peso. */}
+          {fields.includes("weightKg") && !wizard ? (
+            <div className="flex items-center justify-between gap-3 text-sm">
+              <span className="text-muted">
+                Peso actual (tendencia):{" "}
+                <span className="font-semibold tabular-nums text-ink">
+                  {values.weightKg} kg
+                </span>
+              </span>
+              <Link className="font-semibold text-accent" href="/weight">
+                Ir a Peso
+              </Link>
+            </div>
           ) : null}
 
           {fields.includes("targetWeightKg") ? (

@@ -19,8 +19,7 @@ export async function saveProfile(
   if (!parsed.ok) return { error: parsed.error, field: parsed.field };
 
   const { weightKg, ...profile } = parsed.value;
-  const latestWeight = await prisma.weightEntry.findFirst({ orderBy: { day: "desc" } });
-  const isFirstTime = latestWeight === null;
+  const isFirstTime = (await prisma.weightEntry.count()) === 0;
 
   await prisma.$transaction([
     prisma.profile.upsert({
@@ -28,17 +27,17 @@ export async function saveProfile(
       create: { id: PROFILE_ID, ...profile },
       update: profile
     }),
-    // The first save stores the starting weight; later ones only add a
-    // weigh-in for today when the weight actually changed.
-    ...(latestWeight?.kg === weightKg
-      ? []
-      : [
+    // The first save stores the starting weight. Later the weight comes
+    // from the trend and weigh-ins are logged in Peso.
+    ...(isFirstTime
+      ? [
           prisma.weightEntry.upsert({
             where: { day: today },
             create: { day: today, kg: weightKg },
             update: { kg: weightKg }
           })
-        ])
+        ]
+      : [])
   ]);
 
   revalidatePath("/", "layout");

@@ -17,7 +17,7 @@ bajar y, con unas semanas de datos, se reajusta a tu gasto real.
 | 1 | Cimientos y despliegue | Hecha |
 | 2 | Diario manual | Hecha |
 | 3 | Perfil y objetivo calórico | Hecha |
-| 4 | Peso y progreso | Pendiente |
+| 4 | Peso y progreso | Implementada (falta desplegar) |
 | 5 | Biblioteca de alimentos y cantidades | Pendiente |
 | 6 | Código de barras | Pendiente |
 | 7 | Descripción en texto (IA) | Pendiente |
@@ -312,19 +312,45 @@ recalcule a medida que bajas.
     elegido.
   - Fecha estimada con el ritmo real.
 - El objetivo calórico se recalcula con el peso de tendencia actual.
-- Importar el histórico desde CSV (por ejemplo, exportando
-  `~/Peso semanal.xlsx`) para empezar con datos.
 
 ### Fuera de alcance
 
 - Básculas inteligentes y Apple Salud.
+- Importar un histórico de pesos: se descartó porque el registro empieza de
+  cero (el Excel antiguo no tiene pesos actuales).
 
 ### Criterios de aceptación
 
-- [ ] Tests de la tendencia con datos sintéticos: pesajes diarios, semanales y
+- [x] Tests de la tendencia con datos sintéticos: pesajes diarios, semanales y
       con huecos.
-- [ ] Apuntar el peso del día desde el móvil lleva unos segundos.
-- [ ] El histórico importado aparece en la gráfica y en el progreso.
+- [x] Apuntar el peso del día desde el móvil lleva unos segundos.
+- ~~El histórico importado aparece en la gráfica y en el progreso.~~
+      Descartado: no se importa histórico (ver *Fuera de alcance*).
+
+Verificado en local (08-10-2026): `make check` en verde. Tests en
+`src/domain/weight.test.ts` con series sintéticas: la tendencia calculada a
+mano, peso estable diario y semanal, un pesaje semanal que mueve la tendencia
+lo mismo que siete diarios, un hueco largo que la deja alcanzar el peso nuevo,
+ritmo real con pesajes diarios con ruido (0,7 kg/sem), semanales (0,5) y con
+huecos, sin ritmo con menos de dos semanas o tras meses sin pesarse, fecha
+estimada (bajando, estable, subiendo y objetivo alcanzado), rangos de la
+gráfica y validación del formulario. En vista móvil (375 px), con una BD de
+prueba de unos 140 pesajes: apuntar el peso de hoy (campo y «Guardar») y de
+otro día, error de validación, editar y borrar desde el historial, gráfica en
+1 mes, 3 meses y todo, progreso con ritmo real y fecha, y el objetivo de
+*Hoy*, *Ajustes* y el editor del perfil calculado con el peso de tendencia.
+
+Decisiones:
+
+- Tendencia: media móvil exponencial del 10 % diario; un pesaje tras n días
+  sin datos pesa 1 − 0,9ⁿ, así que tolera huecos y pesajes semanales.
+- El objetivo calórico usa la tendencia redondeada a 0,1 kg. Solo el
+  asistente inicial pide el peso; después se apunta en *Peso* y el editor del
+  perfil lo muestra. No se puede borrar el único pesaje.
+- Ritmo real: tendencia de hoy frente a la del primer pesaje de las últimas
+  5 semanas, con al menos 2 semanas entre ambos.
+- Gráfica en SVG propio, sin librería. La línea de tendencia se corta en los
+  huecos de más de 3 semanas.
 
 **Hito: a partir de aquí la app ya sirve para el día a día.**
 
@@ -565,8 +591,8 @@ tiendas. El modelo de datos no les cierra la puerta.
 |---|---|
 | ~~Subdominio y puerto definitivos~~: `calorias.joserabalsegura.com` (ya resuelve al servidor) y 3090 (libre según `ss -ltn`) | Fase 1 (decidido) |
 | Nombre e icono de la app: provisionales «Calorías» y un plato blanco sobre verde | Fase 10 |
-| Librería de gráficas (Recharts o SVG propio) | Fase 4 |
-| Formato del histórico de peso a importar | Fase 4 |
+| ~~Librería de gráficas~~: SVG propio | Fase 4 (decidido) |
+| ~~Formato del histórico de peso a importar~~: no se importa, se empieza de cero | Fase 4 (decidido) |
 | Modelo de IA definitivo, según calidad y coste medidos | Fases 7-8 |
 
 ## Cómo trabajar cada fase

@@ -35,9 +35,11 @@ Un test concreto: `node --import tsx --test --test-name-pattern "session" tests/
   *Resumen* `/summary`, *Ajustes* `/settings`). `app/login/` va sin barra.
 - `app/**/actions.ts`: server actions.
 - Objetivo calórico: cálculos en `src/domain/target.ts`; `src/lib/profile.ts`
-  carga el `Profile` (fila única) con el último `WeightEntry`.
+  carga el `Profile` (fila única) con el peso de tendencia.
   `/settings/profile` es el asistente inicial (sin perfil) y el editor desde
   *Ajustes*; *Hoy* muestra consumidas / objetivo / restantes.
+- Peso (`/weight`): un `WeightEntry` por día; tendencia, ritmo real y rangos
+  de la gráfica (SVG propio) en `src/domain/weight.ts`.
 - Diario (*Hoy*): `/` muestra hoy y `/?day=YYYY-MM-DD` otro día.
   `DiaryEntry` guarda copia del nombre y las kcal; las comidas y sus ids están
   en `src/domain/meals.ts` y las fechas de Madrid en `src/domain/day.ts`.
