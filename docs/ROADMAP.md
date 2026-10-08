@@ -20,7 +20,7 @@ bajar y, con unas semanas de datos, se reajusta a tu gasto real.
 | 4 | Peso y progreso | Hecha |
 | 5 | Biblioteca de alimentos y cantidades | Hecha |
 | 6 | Código de barras | Hecha |
-| 7 | Descripción en texto (IA) | Implementada (falta desplegar) |
+| 7 | Descripción en texto (IA) | Hecha |
 | 8 | Foto de la etiqueta (IA) | Pendiente |
 | 9 | Resumen semanal y objetivo adaptativo | Pendiente |
 | 10 | Calidad de vida | Pendiente |
@@ -627,6 +627,10 @@ Decisiones:
 - Variables: `ANTHROPIC_API_KEY`, y opcionales `ANTHROPIC_MODEL`,
   `ANTHROPIC_EFFORT` y `ANTHROPIC_WORKSPACE_ID` (para una clave sin
   workspace, que las organizaciones Team rechazan sin él).
+
+Desplegada en `remote` el 08-10-2026 (`3293b08`, migración `ai_call`
+aplicada, `ANTHROPIC_API_KEY` en `/etc/calorias/app.env`, copia previa de
+SQLite y smoke test local y por HTTPS correctos).
 
 **Hito: los platos caseros y los alimentos sin envase también se registran
 rápido.**
