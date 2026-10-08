@@ -9,3 +9,8 @@ export function diaryHref(day: string, today: string): string {
 export function addHref(day: string, meal: Meal): string {
   return `/add?day=${day}&meal=${meal}`;
 }
+
+/** The barcode scanner for a day and meal. */
+export function scanHref(day: string, meal: Meal): string {
+  return `/add/scan?day=${day}&meal=${meal}`;
+}

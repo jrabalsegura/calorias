@@ -191,6 +191,9 @@ test("the food form rejects missing or out-of-range values", () => {
 test("the entry name copies the brand", () => {
   assert.equal(foodEntryName({ name: "Pan de molde", brand: "Bimbo" }), "Pan de molde (Bimbo)");
   assert.equal(foodEntryName({ name: "Plátano", brand: null }), "Plátano");
+  // Products often bring the brand in the name too.
+  assert.equal(foodEntryName({ name: "Nutella", brand: "Nutella" }), "Nutella");
+  assert.equal(foodEntryName({ name: "Coca-Cola Zero", brand: "coca-cola" }), "Coca-Cola Zero");
 });
 
 test("search ignores accents and case and needs every word", () => {

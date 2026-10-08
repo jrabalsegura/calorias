@@ -87,6 +87,8 @@ export async function saveFoodEntry(values: {
   meal: string;
   quantity: string;
   unit: string;
+  /** How the food was found; only new entries take it. */
+  source?: "library" | "barcode";
 }): Promise<{ error: string } | null> {
   await requireCurrentUser();
 
@@ -120,7 +122,13 @@ export async function saveFoodEntry(values: {
     if (count === 0) return { error: "Esta entrada ya no existe. Recarga la página." };
   } else {
     await prisma.$transaction([
-      prisma.diaryEntry.create({ data: { ...data, day: values.day, source: "library" } }),
+      prisma.diaryEntry.create({
+        data: {
+          ...data,
+          day: values.day,
+          source: values.source === "barcode" ? "barcode" : "library"
+        }
+      }),
       prisma.food.update({ where: { id: food.id }, data: { lastUsedAt: new Date() } })
     ]);
   }

@@ -19,7 +19,7 @@ bajar y, con unas semanas de datos, se reajusta a tu gasto real.
 | 3 | Perfil y objetivo calórico | Hecha |
 | 4 | Peso y progreso | Hecha |
 | 5 | Biblioteca de alimentos y cantidades | Hecha |
-| 6 | Código de barras | Pendiente |
+| 6 | Código de barras | Implementada (falta desplegar) |
 | 7 | Descripción en texto (IA) | Pendiente |
 | 8 | Foto de la etiqueta (IA) | Pendiente |
 | 9 | Resumen semanal y objetivo adaptativo | Pendiente |
@@ -472,8 +472,59 @@ Escanear un producto del súper y añadirlo con sus calorías en segundos.
 
 - [ ] Probado en el móvil, en el navegador y con la app instalada, con productos
       reales: encontrado, no encontrado y con datos incompletos.
-- [ ] El segundo escaneo del mismo producto no consulta Open Food Facts.
-- [ ] Tests del mapeo de OFF con respuestas guardadas como fixtures.
+- [x] El segundo escaneo del mismo producto no consulta Open Food Facts.
+- [x] Tests del mapeo de OFF con respuestas guardadas como fixtures.
+
+Verificado en local (08-10-2026): `make check` en verde. Fixtures reales de
+OFF en `tests/fixtures/off/` (Nutella, Coca-Cola, un producto sin envase ni
+marca, canela de Mercadona sin energía y un código que OFF no conoce), con
+variantes derivadas en `src/domain/off.test.ts` para solo kJ, kJ escritos
+como kcal, kcal que no cuadran con los macros o los kJ, ración y envase,
+unidad deducida del texto e imágenes de otros dominios. En
+`src/domain/barcode.test.ts`: dígito de control, UPC-A y GTIN-14 → EAN-13,
+UPC-E expandido, y que el segundo escaneo sale de la biblioteca sin llamar a
+OFF. `tests/zxing-wasm.test.ts` comprueba que el WebAssembly servido coincide
+con el instalado. En vista móvil (375 px) con una BD de prueba y OFF real,
+escribiendo el código (el navegador de pruebas no tiene cámara; se muestra el
+aviso y queda la entrada manual): Nutella encontrada con foto y 539 kcal →
+15 g → *Hoy*; el segundo escaneo la abre con los 15 g de la última vez y sin
+nueva petición a OFF en el log; un código con el dígito de control mal da
+aviso sin consultar; uno que OFF no conoce abre el alimento nuevo con el
+código y, al crearlo, vuelve con la ficha abierta; la canela (sin kcal en
+OFF) llega con nombre, marca, foto y porción rellenos y solo pide las kcal;
+corregir un producto desde la ficha vuelve al escáner con él abierto. El
+polyfill ZXing (el camino de Safari) leyó un EAN-13 dibujado en un canvas
+cargando el wasm desde `/zxing/`. **Pendiente: la prueba en el móvil real con
+la cámara**, que según «Cómo trabajar cada fase» se hará al final.
+
+Decisiones:
+
+- *Escanear* (`/add/scan?day=&meal=`) se abre desde un botón de *Añadir*:
+  «+» → *Escanear código de barras* → leer → *Añadir* (3 toques). Tras
+  añadir vuelve a *Hoy*; cerrar la ficha vuelve a escanear.
+- Lector: `BarcodeDetector` nativo si lee EAN (Chrome en Android) y si no el
+  polyfill `barcode-detector` (Safari). Su WebAssembly se sirve desde
+  `public/zxing/` en vez de jsDelivr; al actualizar el paquete hay que copiar
+  el nuevo (`tests/zxing-wasm.test.ts` avisa).
+- Los códigos se guardan normalizados: EAN-13 o EAN-8 con dígito de control
+  válido; UPC-A pasa a EAN-13 (con un 0 delante) y UPC-E se expande, así el
+  mismo producto coincide lo lea como lo lea.
+- Orden de búsqueda: biblioteca (también archivados, que se recuperan al
+  escanearlos) → OFF (`/api/v2/product`, solo los campos necesarios,
+  User-Agent propio, 8 s de límite). Si OFF trae nombre y kcal válidas, el
+  producto se guarda al momento (`source: barcode`) con macros e imagen; si
+  no, o si no está, se crea a mano con el código asociado y lo que se sepa
+  ya relleno. Los «no encontrados» no se cachean (pueden añadirse a OFF).
+- Avisos: solo kJ (kcal calculadas), kcal y kJ que no cuadran (>10 %), kcal
+  que no cuadran con 4·P + 4·H + 9·G (>20 %) y más de 900 kcal/100 (se
+  descartan). Se muestran en la ficha la primera vez, con enlace a corregir.
+- Porciones de OFF: «ración» (si no es el envase entero) y «envase» solo si
+  es de hasta 350 g/ml, para no proponer un bote de 400 g por defecto.
+- `Food.imageUrl` (migración `food_image`) guarda la foto de OFF; solo se
+  aceptan URLs `https` de `openfoodfacts.org`.
+- Las entradas del escáner se guardan con `source: barcode`. El nombre de la
+  entrada ya no repite la marca si está en el nombre («Nutella», no
+  «Nutella (Nutella)»).
 
 **Hito: registrar productos envasados es tan rápido como en cualquier app de
 calorías.**

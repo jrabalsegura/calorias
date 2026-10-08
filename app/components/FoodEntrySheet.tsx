@@ -8,6 +8,7 @@ import { parseDecimal } from "@/domain/target";
 import type { LibraryFood } from "@/lib/foods";
 import { deleteEntry, saveFoodEntry } from "../(app)/actions";
 import { setFoodFavorite } from "../(app)/foods/actions";
+import Link from "next/link";
 import { CloseIcon, StarIcon } from "./icons";
 import { MealPicker } from "./MealPicker";
 import { decimalText, QuantityPicker, type QuantityValue } from "./QuantityPicker";
@@ -37,12 +38,21 @@ export function FoodEntrySheet({
   day,
   target,
   onClose,
-  onSaved
+  onSaved,
+  source = "library",
+  warnings = [],
+  editHref
 }: {
   day: string;
   target: FoodSheetTarget | null;
   onClose: () => void;
   onSaved?: () => void;
+  /** How the food was found, saved with new entries. */
+  source?: "library" | "barcode";
+  /** Doubts about the food's data (a product just read from Open Food Facts). */
+  warnings?: string[];
+  /** Where to correct the food when there are warnings. */
+  editHref?: string;
 }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [value, setValue] = useState<QuantityValue>(() =>
@@ -74,6 +84,7 @@ export function FoodEntrySheet({
         foodId: food.id,
         day,
         meal: typeof meal === "string" ? meal : "",
+        source,
         ...value
       });
       if (result) {
@@ -97,6 +108,13 @@ export function FoodEntrySheet({
     >
       <form className="grid gap-4 p-4" noValidate onSubmit={onSubmit}>
         <div className="flex items-start gap-1">
+          {food.imageUrl ? (
+            <img
+              alt=""
+              className="mr-2 mt-1 h-14 w-14 shrink-0 rounded-lg border border-line bg-white object-contain"
+              src={food.imageUrl}
+            />
+          ) : null}
           <div className="min-w-0 flex-1 pt-2">
             <h2 className="text-lg font-semibold leading-tight text-ink" id="food-sheet-title">
               {food.name}
@@ -127,6 +145,19 @@ export function FoodEntrySheet({
             <CloseIcon />
           </button>
         </div>
+
+        {warnings.length > 0 ? (
+          <div className="grid gap-1 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
+            {warnings.map((warning) => (
+              <p key={warning}>{warning}</p>
+            ))}
+            {editHref ? (
+              <Link className="min-h-10 py-2 font-semibold text-amber-900 underline" href={editHref}>
+                Corregir los datos
+              </Link>
+            ) : null}
+          </div>
+        ) : null}
 
         <QuantityPicker
           food={food}

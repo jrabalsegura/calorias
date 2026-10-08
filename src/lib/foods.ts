@@ -17,6 +17,8 @@ export type LibraryFood = {
   brand: string | null;
   baseUnit: BaseUnit;
   kcalPer100: number;
+  barcode: string | null;
+  imageUrl: string | null;
   favorite: boolean;
   archived: boolean;
   portions: FoodPortionData[];
@@ -30,6 +32,8 @@ export const foodSelect = {
   brand: true,
   baseUnit: true,
   kcalPer100: true,
+  barcode: true,
+  imageUrl: true,
   favorite: true,
   archived: true,
   portions: {
@@ -44,6 +48,8 @@ type FoodRow = {
   brand: string | null;
   baseUnit: string;
   kcalPer100: number;
+  barcode: string | null;
+  imageUrl: string | null;
   favorite: boolean;
   archived: boolean;
   portions: FoodPortionData[];
@@ -106,4 +112,20 @@ export async function loadLibrary(
   );
 
   return { foods, recentIds };
+}
+
+/** The quantity of the latest diary entry with a food, if any. */
+export async function loadLastUsed(foodId: string): Promise<Quantity | null> {
+  const entry = await prisma.diaryEntry.findFirst({
+    where: { foodId, quantity: { not: null }, unit: { not: null } },
+    orderBy: [{ day: "desc" }, { createdAt: "desc" }],
+    select: { quantity: true, unit: true }
+  });
+  return entry ? { quantity: entry.quantity!, unit: entry.unit! } : null;
+}
+
+/** One food ready to be added, with the quantity used last time. */
+export async function loadFoodForAdding(id: string): Promise<LibraryFood | null> {
+  const row = await prisma.food.findUnique({ where: { id }, select: foodSelect });
+  return row ? toLibraryFood(row, await loadLastUsed(id)) : null;
 }
