@@ -17,7 +17,7 @@ bajar y, con unas semanas de datos, se reajusta a tu gasto real.
 | 1 | Cimientos y despliegue | Hecha |
 | 2 | Diario manual | Hecha |
 | 3 | Perfil y objetivo calórico | Hecha |
-| 4 | Peso y progreso | Implementada (falta desplegar) |
+| 4 | Peso y progreso | Hecha |
 | 5 | Biblioteca de alimentos y cantidades | Pendiente |
 | 6 | Código de barras | Pendiente |
 | 7 | Descripción en texto (IA) | Pendiente |
@@ -351,6 +351,9 @@ Decisiones:
   5 semanas, con al menos 2 semanas entre ambos.
 - Gráfica en SVG propio, sin librería. La línea de tendencia se corta en los
   huecos de más de 3 semanas.
+
+Desplegada en `remote` el 08-10-2026 (`5ebf9db`, sin migraciones; smoke test
+local y por HTTPS correctos).
 
 **Hito: a partir de aquí la app ya sirve para el día a día.**
 
