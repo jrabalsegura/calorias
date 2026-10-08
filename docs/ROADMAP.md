@@ -19,7 +19,7 @@ bajar y, con unas semanas de datos, se reajusta a tu gasto real.
 | 3 | Perfil y objetivo calórico | Hecha |
 | 4 | Peso y progreso | Hecha |
 | 5 | Biblioteca de alimentos y cantidades | Hecha |
-| 6 | Código de barras | Implementada (falta desplegar) |
+| 6 | Código de barras | Hecha |
 | 7 | Descripción en texto (IA) | Pendiente |
 | 8 | Foto de la etiqueta (IA) | Pendiente |
 | 9 | Resumen semanal y objetivo adaptativo | Pendiente |
@@ -525,6 +525,9 @@ Decisiones:
 - Las entradas del escáner se guardan con `source: barcode`. El nombre de la
   entrada ya no repite la marca si está en el nombre («Nutella», no
   «Nutella (Nutella)»).
+
+Desplegada en `remote` el 08-10-2026 (`7d35e41`, migración `food_image`
+aplicada, copia previa de SQLite y smoke test local y por HTTPS correctos).
 
 **Hito: registrar productos envasados es tan rápido como en cualquier app de
 calorías.**
