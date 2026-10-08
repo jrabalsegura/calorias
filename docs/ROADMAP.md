@@ -18,7 +18,7 @@ bajar y, con unas semanas de datos, se reajusta a tu gasto real.
 | 2 | Diario manual | Hecha |
 | 3 | Perfil y objetivo calórico | Hecha |
 | 4 | Peso y progreso | Hecha |
-| 5 | Biblioteca de alimentos y cantidades | Implementada (falta desplegar) |
+| 5 | Biblioteca de alimentos y cantidades | Hecha |
 | 6 | Código de barras | Pendiente |
 | 7 | Descripción en texto (IA) | Pendiente |
 | 8 | Foto de la etiqueta (IA) | Pendiente |
@@ -432,6 +432,9 @@ Decisiones:
   recalcula). Los alimentos no se borran: se archivan.
 - `Food` ya incluye código de barras, macros y origen para las fases 6-8, sin
   interfaz.
+
+Desplegada en `remote` el 08-10-2026 (`01eb284`, migración `food_library`
+aplicada, copia previa de SQLite y smoke test local y por HTTPS correctos).
 
 ---
 
