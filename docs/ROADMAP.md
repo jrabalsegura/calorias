@@ -16,7 +16,7 @@ bajar y, con unas semanas de datos, se reajusta a tu gasto real.
 |---|---|---|
 | 1 | Cimientos y despliegue | Hecha |
 | 2 | Diario manual | Hecha |
-| 3 | Perfil y objetivo calórico | Pendiente |
+| 3 | Perfil y objetivo calórico | Implementada (falta probarla en el móvil) |
 | 4 | Peso y progreso | Pendiente |
 | 5 | Biblioteca de alimentos y cantidades | Pendiente |
 | 6 | Código de barras | Pendiente |
@@ -262,10 +262,31 @@ ver en todo momento cuántas te quedan.
 
 ### Criterios de aceptación
 
-- [ ] Tests de dominio con casos calculados a mano, incluidos los límites de
+- [x] Tests de dominio con casos calculados a mano, incluidos los límites de
       seguridad.
-- [ ] Cambiar el ritmo o la actividad actualiza al momento el objetivo y las
+- [x] Cambiar el ritmo o la actividad actualiza al momento el objetivo y las
       kcal restantes.
+
+Verificado en local (08-10-2026): `make check` en verde. Tests en
+`src/domain/target.test.ts` con casos calculados a mano: edad (cumpleaños y
+29 de febrero), Mifflin-St Jeor en hombre y mujer, los cinco factores de
+actividad, el déficit de cada ritmo, el mínimo de 1.200 kcal (mujer) y 1.500
+(hombre) con su explicación, gasto por debajo del mínimo (sin déficit), aviso
+del 1 % semanal, *mantener*, peso objetivo ya alcanzado, objetivo manual (por
+encima del gasto y por debajo del mínimo), fecha estimada, kcal restantes y
+validación del formulario. En vista móvil (375 px), con una BD de prueba: el
+asistente de 3 pasos con validación por paso; la vista previa recalcula al
+momento objetivo, desglose, fecha y «hoy te quedarían» al cambiar ritmo,
+actividad, peso u objetivo manual; al guardar, el peso actual queda como
+`WeightEntry` de hoy; en *Hoy* consumidas / objetivo / restantes con la barra
+en rojo al pasarse; en *Ajustes* el desglose y «Editar perfil y objetivo», y
+al guardar *Hoy* refleja el nuevo objetivo.
+
+Decisiones: el peso para el cálculo es el último `WeightEntry` (la fase 4
+pasará al peso de tendencia); editar el peso en *Ajustes* guarda o corrige el
+pesaje de hoy solo si cambia; todos los días se miden contra el objetivo
+actual (sin histórico de objetivos); el objetivo manual se respeta aunque
+quede bajo el mínimo, con aviso.
 
 ---
 
