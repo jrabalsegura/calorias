@@ -4,6 +4,7 @@ import { dayInMadrid } from "@/domain/day";
 import { ACTIVITY_LEVELS, formatKg, PACES } from "@/domain/target";
 import { requireCurrentUser } from "@/lib/auth";
 import { loadTarget } from "@/lib/profile";
+import { prisma } from "@/lib/prisma";
 import { logoutUser } from "../../login/actions";
 
 export const dynamic = "force-dynamic";
@@ -11,7 +12,10 @@ export const dynamic = "force-dynamic";
 export default async function SettingsPage() {
   const user = await requireCurrentUser();
   const today = dayInMadrid();
-  const goal = await loadTarget(today);
+  const [goal, foodCount] = await Promise.all([
+    loadTarget(today),
+    prisma.food.count({ where: { archived: false } })
+  ]);
 
   return (
     <>
@@ -52,6 +56,30 @@ export default async function SettingsPage() {
           </>
         )}
       </section>
+
+      <Link
+        className="flex min-h-14 items-center gap-3 rounded-lg border border-line bg-white px-4 active:bg-line/40"
+        href="/foods"
+      >
+        <span className="grid flex-1">
+          <span className="font-semibold text-ink">Mis alimentos</span>
+          <span className="text-sm text-muted">
+            {foodCount === 1 ? "1 alimento guardado" : `${foodCount} alimentos guardados`}
+          </span>
+        </span>
+        <svg
+          aria-hidden="true"
+          className="h-5 w-5 text-muted"
+          fill="none"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          viewBox="0 0 24 24"
+        >
+          <path d="m9 5 7 7-7 7" />
+        </svg>
+      </Link>
 
       <section className="grid gap-4 rounded-lg border border-line bg-white p-4">
         <div className="grid gap-1">

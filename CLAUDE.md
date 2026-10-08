@@ -43,6 +43,11 @@ Un test concreto: `node --import tsx --test --test-name-pattern "session" tests/
 - Diario (*Hoy*): `/` muestra hoy y `/?day=YYYY-MM-DD` otro día.
   `DiaryEntry` guarda copia del nombre y las kcal; las comidas y sus ids están
   en `src/domain/meals.ts` y las fechas de Madrid en `src/domain/day.ts`.
+- Biblioteca: `Food` (kcal por 100 g/ml) y `FoodPortion`; conversiones,
+  búsqueda sin tildes, recientes y copias en `src/domain/food.ts`, y la carga
+  en `src/lib/foods.ts`. *Añadir* (`/add`, con *Repetir* en `/add/repeat`) es
+  la entrada a todos los métodos de registro; *Mis alimentos* en `/foods`.
+  `QuantityPicker` y `FoodEntrySheet` son el selector de cantidad común.
 - `proxy.ts` (el antiguo middleware; runtime Node): valida la cookie firmada y `sessionVersion`
   contra la BD en cada petición y la renueva (sesión deslizante de 180 días).
   Las rutas públicas (login, health, manifest, iconos, `sw.js`) están en

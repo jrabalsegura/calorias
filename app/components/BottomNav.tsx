@@ -3,11 +3,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+// `also`: other sections that belong to the tab (Añadir to Hoy, the food
+// library to Ajustes).
 const ITEMS = [
-  { href: "/", label: "Hoy", icon: TodayIcon },
-  { href: "/weight", label: "Peso", icon: WeightIcon },
-  { href: "/summary", label: "Resumen", icon: SummaryIcon },
-  { href: "/settings", label: "Ajustes", icon: SettingsIcon }
+  { href: "/", label: "Hoy", icon: TodayIcon, also: ["/add"] },
+  { href: "/weight", label: "Peso", icon: WeightIcon, also: [] },
+  { href: "/summary", label: "Resumen", icon: SummaryIcon, also: [] },
+  { href: "/settings", label: "Ajustes", icon: SettingsIcon, also: ["/foods"] }
 ];
 
 export function BottomNav() {
@@ -19,9 +21,10 @@ export function BottomNav() {
       className="fixed inset-x-0 bottom-0 z-10 border-t border-line bg-white/95 pb-[env(safe-area-inset-bottom)] backdrop-blur"
     >
       <ul className="mx-auto grid max-w-lg grid-cols-4">
-        {ITEMS.map(({ href, label, icon: Icon }) => {
+        {ITEMS.map(({ href, label, icon: Icon, also }) => {
           const active =
-            href === "/" ? pathname === "/" : pathname.startsWith(href);
+            (href === "/" ? pathname === "/" : pathname.startsWith(href)) ||
+            also.some((prefix) => pathname.startsWith(prefix));
 
           return (
             <li key={href}>

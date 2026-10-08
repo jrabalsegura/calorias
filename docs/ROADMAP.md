@@ -18,7 +18,7 @@ bajar y, con unas semanas de datos, se reajusta a tu gasto real.
 | 2 | Diario manual | Hecha |
 | 3 | Perfil y objetivo calórico | Hecha |
 | 4 | Peso y progreso | Hecha |
-| 5 | Biblioteca de alimentos y cantidades | Pendiente |
+| 5 | Biblioteca de alimentos y cantidades | Implementada (falta desplegar) |
 | 6 | Código de barras | Pendiente |
 | 7 | Descripción en texto (IA) | Pendiente |
 | 8 | Foto de la etiqueta (IA) | Pendiente |
@@ -387,9 +387,51 @@ porciones y recientes.
 
 ### Criterios de aceptación
 
-- [ ] Añadir un alimento habitual cuesta 2-3 toques desde *Hoy*.
-- [ ] Tests de la conversión de cantidad a kcal (g, ml y porciones) y de la
+- [x] Añadir un alimento habitual cuesta 2-3 toques desde *Hoy*.
+- [x] Tests de la conversión de cantidad a kcal (g, ml y porciones) y de la
       copia de valores.
+
+Verificado en local (08-10-2026): `make check` en verde. Tests en
+`src/domain/food.test.ts`: kcal de g, ml y porciones (también medias
+porciones, 0 kcal y unidades desconocidas), cantidad por defecto, validación
+del selector de cantidad y del formulario de alimento (porciones repetidas o
+con el nombre de la unidad base), búsqueda sin tildes ni mayúsculas con todas
+las palabras, recientes por frecuencia y cercanía, copias que conservan las
+kcal guardadas aunque el alimento cambie y una entrada manual convertida en
+alimento que vuelve a dar las mismas kcal. En vista móvil (375 px), con una BD
+de prueba: desde *Hoy*, «+» de una comida → alimento favorito o reciente →
+«Añadir» (3 toques, con la cantidad de la última vez); cambiar de porciones a
+gramos conserva la cantidad (2 rebanadas → 60 g) y las kcal se recalculan al
+escribir; editar la cantidad y la comida de una entrada de la biblioteca;
+*Repetir* con la comida de ayer preseleccionada más una entrada suelta de otra
+comida; guardar una entrada manual como alimento (con su peso); buscar
+«PLATANO»; crear un alimento desde una búsqueda sin resultados, con porción y
+favorito, y volver a *Añadir* con él abierto; entrada rápida desde *Añadir*;
+editar las kcal de un alimento sin que cambien los días pasados; y archivarlo
+para que deje de salir al añadir.
+
+Decisiones:
+
+- *Añadir* (`/add?day=&meal=`) sustituye a la hoja de entrada rápida en el
+  botón flotante y en el «+» de cada comida: buscador, *Entrada rápida*,
+  *Repetir*, *Nuevo alimento*, favoritos y recientes. Al añadir vuelve a *Hoy*.
+- Toda la biblioteca (sin archivados) se carga en la página y se busca en el
+  cliente: con un único usuario son unos cientos de alimentos como mucho.
+- Recientes: los últimos 60 días; cada uso suma 0,5^(días / 14), así que pesa
+  más lo que comes a menudo y lo de hace meses desaparece. Los favoritos no se
+  repiten en recientes.
+- Al elegir un alimento se propone la última cantidad usada; si no, una
+  porción; si no, 100 g/ml.
+- `DiaryEntry` guarda la cantidad y la unidad (g, ml o el nombre de la
+  porción); editar una entrada de la biblioteca recalcula sus kcal con el
+  alimento actual, porque es un cambio explícito.
+- Guardar una entrada manual como alimento crea una porción «ración» con su
+  peso (si se da, calcula las kcal por 100) o de 100 g/ml con las kcal de la
+  entrada, y enlaza la entrada.
+- *Repetir* copia al día y la comida elegidos con los valores guardados (no
+  recalcula). Los alimentos no se borran: se archivan.
+- `Food` ya incluye código de barras, macros y origen para las fases 6-8, sin
+  interfaz.
 
 ---
 
