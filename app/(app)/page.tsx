@@ -3,6 +3,7 @@ import { DiaryView } from "../components/DiaryView";
 import { dayInMadrid, isValidDay } from "@/domain/day";
 import { sumDiary } from "@/domain/diary";
 import { requireCurrentUser } from "@/lib/auth";
+import { foodSelect, toLibraryFood } from "@/lib/foods";
 import { loadTarget } from "@/lib/profile";
 import { prisma } from "@/lib/prisma";
 
@@ -24,7 +25,15 @@ export default async function TodayPage({
     prisma.diaryEntry.findMany({
       where: { day },
       orderBy: { createdAt: "asc" },
-      select: { id: true, meal: true, name: true, kcal: true }
+      select: {
+        id: true,
+        meal: true,
+        name: true,
+        kcal: true,
+        quantity: true,
+        unit: true,
+        food: { select: foodSelect }
+      }
     }),
     // Every day is measured against the current target (no history yet).
     loadTarget(today)
@@ -35,7 +44,10 @@ export default async function TodayPage({
       <DayNav day={day} today={today} />
       <DiaryView
         day={day}
-        entries={entries}
+        entries={entries.map(({ food, ...entry }) => ({
+          ...entry,
+          food: food ? toLibraryFood(food) : null
+        }))}
         goalKcal={goal?.target.target ?? null}
         totals={sumDiary(entries)}
       />

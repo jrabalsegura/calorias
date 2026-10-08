@@ -10,10 +10,8 @@ import {
   formatRelativeDay,
   isValidDay
 } from "@/domain/day";
+import { diaryHref as dayHref } from "./links";
 
-function dayHref(day: string, today: string) {
-  return day === today ? "/" : `/?day=${day}`;
-}
 
 export function DayNav({ day, today }: { day: string; today: string }) {
   const router = useRouter();

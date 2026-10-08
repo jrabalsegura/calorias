@@ -9,8 +9,11 @@ import {
   useTransition
 } from "react";
 import { MAX_ENTRY_NAME_LENGTH } from "@/domain/diary";
-import { MEALS, type Meal } from "@/domain/meals";
+import type { Meal } from "@/domain/meals";
 import { deleteEntry, saveEntry, type EntryFormState } from "../(app)/actions";
+import { CloseIcon } from "./icons";
+import { MealPicker } from "./MealPicker";
+import { SaveAsFood } from "./SaveAsFood";
 
 export type SheetTarget =
   | { kind: "new"; meal: Meal }
@@ -24,11 +27,14 @@ const INITIAL_STATE: EntryFormState = { status: "idle", message: "", savedAt: 0 
 export function EntrySheet({
   day,
   target,
-  onClose
+  onClose,
+  onSaved
 }: {
   day: string;
   target: SheetTarget | null;
   onClose: () => void;
+  /** Called after a successful save, once the sheet has closed. */
+  onSaved?: () => void;
 }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const kcalRef = useRef<HTMLInputElement>(null);
@@ -48,7 +54,11 @@ export function EntrySheet({
   }, [target]);
 
   useEffect(() => {
-    if (state.status === "saved") dialogRef.current?.close();
+    if (state.status === "saved") {
+      dialogRef.current?.close();
+      onSaved?.();
+    }
+    // Only a new save runs this, not a new onSaved identity.
   }, [state]);
 
   const entry = target?.kind === "edit" ? target.entry : null;
@@ -82,17 +92,7 @@ export function EntrySheet({
               onClick={() => dialogRef.current?.close()}
               type="button"
             >
-              <svg
-                aria-hidden="true"
-                className="h-6 w-6"
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeWidth={2}
-                viewBox="0 0 24 24"
-              >
-                <path d="m6 6 12 12M18 6 6 18" />
-              </svg>
+              <CloseIcon />
             </button>
           </div>
 
@@ -133,25 +133,7 @@ export function EntrySheet({
             />
           </label>
 
-          <fieldset className="grid gap-2">
-            <legend className="mb-2 text-sm font-medium text-ink">Comida</legend>
-            <div className="grid grid-cols-3 gap-2">
-              {MEALS.map(({ id, label }) => (
-                <label className="relative" key={id}>
-                  <input
-                    className="peer sr-only"
-                    defaultChecked={id === meal}
-                    name="meal"
-                    type="radio"
-                    value={id}
-                  />
-                  <span className="flex h-12 cursor-pointer items-center justify-center rounded-lg border border-line bg-white text-sm font-medium text-ink peer-checked:border-accent peer-checked:bg-accent peer-checked:text-white peer-focus-visible:ring-2 peer-focus-visible:ring-accent/40">
-                    {label}
-                  </span>
-                </label>
-              ))}
-            </div>
-          </fieldset>
+          <MealPicker defaultMeal={meal} />
 
           {state.status === "error" ? (
             <p
@@ -192,6 +174,13 @@ export function EntrySheet({
                   ? "Toca otra vez para borrar"
                   : "Borrar"}
             </button>
+          ) : null}
+
+          {entry?.name ? (
+            <SaveAsFood
+              entry={{ id: entry.id, name: entry.name, kcal: entry.kcal }}
+              onSaved={() => dialogRef.current?.close()}
+            />
           ) : null}
         </form>
       ) : null}

@@ -26,13 +26,15 @@ model DiaryEntry {
   quantity  Float?
   unit      String? // g | ml | portion name
   kcal      Int
-  foodId    String? // Food arrives in phase 5; no relation until then
+  foodId    String?
+  food      Food?    @relation(fields: [foodId], references: [id], onDelete: SetNull)
   source    String   @default("manual") // manual | library | barcode | text | label
   note      String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([day])
+  @@index([foodId])
 }
 
 // The single user's data for the calorie target. Only one row exists.
@@ -57,4 +59,38 @@ model WeightEntry {
   kg        Float
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+// A food of the library. Energy is per 100 of its base unit (g or ml);
+// portions are named amounts of that unit. Macros are stored, never shown.
+model Food {
+  id            String        @id @default(cuid())
+  name          String
+  brand         String?
+  barcode       String?       @unique
+  baseUnit      String // g | ml
+  kcalPer100    Float
+  proteinPer100 Float?
+  carbsPer100   Float?
+  fatPer100     Float?
+  source        String        @default("manual") // manual | barcode | text | label
+  favorite      Boolean       @default(false)
+  archived      Boolean       @default(false)
+  lastUsedAt    DateTime?
+  portions      FoodPortion[]
+  entries       DiaryEntry[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+// "1 rebanada = 30 g": amount is in the food's base unit.
+model FoodPortion {
+  id       String @id @default(cuid())
+  foodId   String
+  food     Food   @relation(fields: [foodId], references: [id], onDelete: Cascade)
+  name     String
+  amount   Float
+  position Int    @default(0)
+
+  @@index([foodId])
 }
