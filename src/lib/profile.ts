@@ -7,18 +7,32 @@ import {
   type ProfileInput,
   type TargetResult
 } from "@/domain/target";
+import { currentTrendKg, type WeighIn } from "@/domain/weight";
 
 export type StoredProfile = ProfileInput;
 
-/** The profile with the latest weigh-in, or null until the wizard is done. */
+/** Every weigh-in, oldest first. */
+export function loadWeighIns(): Promise<WeighIn[]> {
+  return prisma.weightEntry.findMany({
+    orderBy: { day: "asc" },
+    select: { day: true, kg: true }
+  });
+}
+
+/**
+ * The profile with the current trend weight (not the last weigh-in, so a
+ * day of water retention does not move the target), or null until the
+ * wizard is done.
+ */
 export async function loadProfile(): Promise<StoredProfile | null> {
-  const [profile, weight] = await Promise.all([
+  const [profile, weighIns] = await Promise.all([
     prisma.profile.findFirst(),
-    prisma.weightEntry.findFirst({ orderBy: { day: "desc" } })
+    loadWeighIns()
   ]);
+  const weightKg = currentTrendKg(weighIns);
   if (
     !profile ||
-    !weight ||
+    weightKg === null ||
     !isSex(profile.sex) ||
     !isActivity(profile.activity) ||
     !isPace(profile.pace)
@@ -30,7 +44,7 @@ export async function loadProfile(): Promise<StoredProfile | null> {
     sex: profile.sex,
     birthDate: profile.birthDate,
     heightCm: profile.heightCm,
-    weightKg: weight.kg,
+    weightKg,
     targetWeightKg: profile.targetWeightKg,
     activity: profile.activity,
     pace: profile.pace,
