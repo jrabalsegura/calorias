@@ -16,7 +16,7 @@ bajar y, con unas semanas de datos, se reajusta a tu gasto real.
 |---|---|---|
 | 1 | Cimientos y despliegue | Hecha |
 | 2 | Diario manual | Hecha |
-| 3 | Perfil y objetivo calórico | Implementada (falta probarla en el móvil) |
+| 3 | Perfil y objetivo calórico | Hecha |
 | 4 | Peso y progreso | Pendiente |
 | 5 | Biblioteca de alimentos y cantidades | Pendiente |
 | 6 | Código de barras | Pendiente |
@@ -287,6 +287,9 @@ pasará al peso de tendencia); editar el peso en *Ajustes* guarda o corrige el
 pesaje de hoy solo si cambia; todos los días se miden contra el objetivo
 actual (sin histórico de objetivos); el objetivo manual se respeta aunque
 quede bajo el mínimo, con aviso.
+
+Desplegada en `remote` el 08-10-2026 (`4990823`, migración aplicada y smoke
+test local y por HTTPS correctos).
 
 ---
 
@@ -568,8 +571,10 @@ tiendas. El modelo de datos no les cierra la puerta.
 
 ## Cómo trabajar cada fase
 
-Una rama por fase (`fase-N-nombre`), `make check` en verde, prueba en el móvil,
-merge a `main` y `make deploy`. Prompt de arranque:
+Una rama por fase (`fase-N-nombre`), `make check` en verde, prueba en vista
+móvil en el navegador, merge a `main` y `make deploy`. Desde la fase 3 cada
+fase se marca como hecha al desplegarla: la prueba en el móvil se hará una sola
+vez, con la configuración inicial, cuando esté todo el desarrollo. Prompt de arranque:
 
 ```text
 Lee docs/ROADMAP.md (y CLAUDE.md desde la fase 2). Implementa solo la fase N.
