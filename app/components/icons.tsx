@@ -102,3 +102,20 @@ export function FlashlightIcon({ on }: { on: boolean }) {
     </Icon>
   );
 }
+
+export function TextIcon() {
+  return (
+    <Icon>
+      <path d="M5 5h14a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-8l-4 3v-3H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z" />
+      <path d="M8 9.5h8M8 12.5h5" />
+    </Icon>
+  );
+}
+
+export function TrashIcon() {
+  return (
+    <Icon className="h-5 w-5">
+      <path d="M5 7h14M10 7V5h4v2M7 7l1 12h8l1-12" />
+    </Icon>
+  );
+}

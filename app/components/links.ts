@@ -14,3 +14,8 @@ export function addHref(day: string, meal: Meal): string {
 export function scanHref(day: string, meal: Meal): string {
   return `/add/scan?day=${day}&meal=${meal}`;
 }
+
+/** The description-in-text screen for a day and meal. */
+export function textHref(day: string, meal: Meal): string {
+  return `/add/text?day=${day}&meal=${meal}`;
+}

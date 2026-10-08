@@ -23,9 +23,10 @@ import {
   PlusIcon,
   RepeatIcon,
   SearchIcon,
-  StarIcon
+  StarIcon,
+  TextIcon
 } from "./icons";
-import { addHref, diaryHref, scanHref } from "./links";
+import { addHref, diaryHref, scanHref, textHref } from "./links";
 import { PageHeader } from "./PageHeader";
 
 const SEARCH_LIMIT = 40;
@@ -140,6 +141,12 @@ export function AddScreen({
               <BarcodeIcon />
             </span>
             Escanear código de barras
+          </Link>
+          <Link className="secondary-button w-full gap-2" href={textHref(day, meal)}>
+            <span className="text-accent">
+              <TextIcon />
+            </span>
+            Describir lo que has comido
           </Link>
           <div className="grid grid-cols-3 gap-2">
             <ShortcutButton

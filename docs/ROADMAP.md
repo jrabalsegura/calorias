@@ -20,7 +20,7 @@ bajar y, con unas semanas de datos, se reajusta a tu gasto real.
 | 4 | Peso y progreso | Hecha |
 | 5 | Biblioteca de alimentos y cantidades | Hecha |
 | 6 | Código de barras | Hecha |
-| 7 | Descripción en texto (IA) | Pendiente |
+| 7 | Descripción en texto (IA) | Implementada (falta desplegar) |
 | 8 | Foto de la etiqueta (IA) | Pendiente |
 | 9 | Resumen semanal y objetivo adaptativo | Pendiente |
 | 10 | Calidad de vida | Pendiente |
@@ -86,24 +86,24 @@ Hitos:
 | Copias | Copia de SQLite antes de cada despliegue, timer diario en el servidor y `make backup-pull` al Mac, con el mismo esquema que finantialApp. |
 | Código de barras | API `BarcodeDetector` con el polyfill `barcode-detector` (ZXing en WebAssembly) para Safari. La cámara exige HTTPS. |
 | Productos | Open Food Facts: gratis, abierta y con buena cobertura en España. Se consulta desde el servidor con un User-Agent propio (lo piden) y se cachea en la BD. |
-| IA | API de Claude desde el servidor con `@anthropic-ai/sdk`: texto para descripciones, visión para etiquetas y siempre salida JSON con esquema. Modelo por defecto `claude-opus-5-5` con esfuerzo `low` de partida, configurable por variable de entorno. La API key nunca llega al navegador. |
+| IA | API de Claude desde el servidor con `@anthropic-ai/sdk`: texto para descripciones, visión para etiquetas y siempre salida JSON con esquema. Modelo por defecto `claude-sonnet-5-5` con esfuerzo `low`, configurables por variable de entorno (`ANTHROPIC_MODEL`, `ANTHROPIC_EFFORT`). La API key nunca llega al navegador. |
 | Fechas | El día del diario se guarda como `YYYY-MM-DD`, en zona `Europe/Madrid`. |
 | Dominio | Los cálculos (objetivo, tendencia, gasto adaptativo, conversiones) son funciones puras con tests en `src/domain/`. |
 
 ### Coste de la IA (orientativo, precios de septiembre de 2026)
 
-Claude Opus 5.5 cuesta 4 $ por millón de tokens de entrada y 20 $ por millón de
-salida.
+Claude Sonnet 5.5 cuesta 2 $ por millón de tokens de entrada y 10 $ por millón
+de salida (Opus 5.5, el doble).
 
 | Uso | Coste aproximado |
 |---|---|
-| Desglosar una descripción | 2-4 céntimos de dólar |
-| Leer una etiqueta (foto reducida a unos 1.500 px) | 2-3 céntimos |
-| Uso diario personal (unas 3 descripciones al día y alguna etiqueta) | **2-5 $ al mes** |
+| Desglosar una descripción (medido en la fase 7: ~1.700 tokens de entrada y 100-300 de salida) | ~0,5 céntimos de dólar |
+| Leer una etiqueta (foto reducida a unos 1.500 px) | 1-2 céntimos |
+| Uso diario personal (unas 3 descripciones al día y alguna etiqueta) | **menos de 1 $ al mes** |
 
-Cada etiqueta se lee una sola vez, porque el producto queda guardado. Sonnet 5.5
-cuesta la mitad: se puede probar cambiando la variable de entorno si su calidad
-es suficiente. Conviene fijar un límite de gasto mensual en la consola de
+Cada etiqueta se lee una sola vez, porque el producto queda guardado. Se puede
+probar Opus 5.5 o Haiku 5.5 cambiando `ANTHROPIC_MODEL`; *Ajustes* muestra el
+gasto del mes. Conviene fijar un límite de gasto mensual en la consola de
 Anthropic.
 
 ## Modelo de datos (orientativo)
@@ -576,12 +576,57 @@ Es la primera integración con la IA.
 
 ### Criterios de aceptación
 
-- [ ] Un conjunto de 15-20 descripciones de prueba da resultados razonables,
+- [x] Un conjunto de 15-20 descripciones de prueba da resultados razonables,
       revisados a mano. Incluye cantidades explícitas, raciones vagas y platos
       caseros.
-- [ ] Registrar una comida casera por texto lleva menos de 30 segundos.
-- [ ] Si mencionas un alimento de tu biblioteca, se usan sus datos.
-- [ ] La API key no aparece en el navegador ni en los logs.
+- [x] Registrar una comida casera por texto lleva menos de 30 segundos.
+- [x] Si mencionas un alimento de tu biblioteca, se usan sus datos.
+- [x] La API key no aparece en el navegador ni en los logs.
+
+Verificado en local (08-10-2026) con `claude-sonnet-5-5` y esfuerzo `low`:
+`make check` en verde. `scripts/eval-text.ts` pasa 19 descripciones (avena con
+leche y plátano, lentejas con chorizo, huevos fritos, bocadillo, tortilla,
+ensalada, caña con bravas, paella, cantidades explícitas y raciones vagas, y
+tres con «mi …») con una biblioteca de prueba; revisadas a mano, todas
+razonables, con las cantidades dadas respetadas, raciones típicas («plato de
+lentejas ≈ 350 g», «puñado ≈ 30 g»), el aceite de cocinado en su línea y los
+alimentos propios con sus kcal y porciones («2 rebanadas × 28 g»). Respuestas
+de 2-4 s (una de 8 s). Tras la revisión se ajustó el prompt para que «pan» a
+secas no se tome por tu pan de molde y el aceite vaya siempre en gramos. En
+vista móvil (375 px) con una BD de prueba: *Añadir* → *Describir lo que has
+comido* → «un plato de lentejas con chorizo y una rebanada de mi pan de
+molde» → lentejas, aceite y el pan de la biblioteca en unos 3 s; *Grande*
+(350 → 438 g), quitar el aceite, «¿Algo más?» con un café con leche, cambiar
+sus ml a mano, guardar las lentejas como alimento (ración de 438 g) y
+*Añadir al diario* → *Hoy* con las tres entradas (origen `text`, las dos de
+la biblioteca enlazadas). Un texto que no es comida da aviso con *Apuntarlo
+a mano*. *Ajustes* muestra 3 consultas y 0,01 $. Ni los logs (solo modelo,
+tokens y duración) ni el HTML y los JS del navegador contienen la clave.
+**Pendiente: la prueba en el móvil real**, que se hará al final.
+
+Decisiones:
+
+- *Describir* (`/add/text?day=&meal=`) se abre desde *Añadir*. Tras añadir
+  vuelve a *Hoy*.
+- Petición: `client.beta.messages.create` con salida JSON por esquema
+  (`output_config.format`), esfuerzo `low` y `fallbacks: "default"` (si un
+  filtro de seguridad rechaza la petición, responde otro modelo). 20 s por
+  intento, un reintento y 30 s en total. Errores con mensaje en español y
+  alternativa a mano.
+- La petición lleva la biblioteca (no archivados, favoritos y más usados
+  primero) numerada, con kcal y porciones; la IA responde con el número. Una
+  línea de la biblioteca toma su unidad y sus kcal por 100 de la BD, no de
+  la IA. Las kcal de cada línea se calculan siempre en el servidor.
+- Pequeño/normal/grande multiplican la cantidad de la IA por 0,75/1/1,25.
+  «¿Algo más?» hace otra consulta y añade sus líneas.
+- Guardar una línea como alimento crea un `Food` con `source: text` y una
+  porción «ración» con la cantidad de ese momento.
+- Cada llamada queda en `AiCall` (migración `ai_call`): día, modelo que
+  respondió, tokens, coste estimado con los precios de `src/domain/aiUsage.ts`,
+  duración y si fue bien. *Ajustes* suma las del mes.
+- Variables: `ANTHROPIC_API_KEY`, y opcionales `ANTHROPIC_MODEL`,
+  `ANTHROPIC_EFFORT` y `ANTHROPIC_WORKSPACE_ID` (para una clave sin
+  workspace, que las organizaciones Team rechazan sin él).
 
 **Hito: los platos caseros y los alimentos sin envase también se registran
 rápido.**

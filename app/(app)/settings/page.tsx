@@ -1,8 +1,11 @@
 import Link from "next/link";
 import { TargetBreakdown } from "../../components/TargetBreakdown";
+import { formatUsd, monthStart, summarizeAiCalls } from "@/domain/aiUsage";
 import { dayInMadrid } from "@/domain/day";
+import { formatKcal } from "@/domain/diary";
 import { ACTIVITY_LEVELS, formatKg, PACES } from "@/domain/target";
 import { requireCurrentUser } from "@/lib/auth";
+import { aiSettings } from "@/lib/claude";
 import { loadTarget } from "@/lib/profile";
 import { prisma } from "@/lib/prisma";
 import { logoutUser } from "../../login/actions";
@@ -12,10 +15,16 @@ export const dynamic = "force-dynamic";
 export default async function SettingsPage() {
   const user = await requireCurrentUser();
   const today = dayInMadrid();
-  const [goal, foodCount] = await Promise.all([
+  const [goal, foodCount, aiCalls] = await Promise.all([
     loadTarget(today),
-    prisma.food.count({ where: { archived: false } })
+    prisma.food.count({ where: { archived: false } }),
+    prisma.aiCall.findMany({
+      where: { day: { gte: monthStart(today) } },
+      select: { ok: true, inputTokens: true, outputTokens: true, costUsd: true }
+    })
   ]);
+  const ai = aiSettings();
+  const aiMonth = summarizeAiCalls(aiCalls);
 
   return (
     <>
@@ -80,6 +89,31 @@ export default async function SettingsPage() {
           <path d="m9 5 7 7-7 7" />
         </svg>
       </Link>
+
+      <section aria-labelledby="ai-title" className="grid gap-3 rounded-lg border border-line bg-white p-4">
+        <div className="flex items-baseline justify-between gap-3">
+          <h2 className="font-semibold text-ink" id="ai-title">
+            IA
+          </h2>
+          <p className="truncate text-sm text-muted">
+            {ai.configured ? `${ai.model} · esfuerzo ${ai.effort}` : "Sin configurar"}
+          </p>
+        </div>
+        <div className="flex items-end justify-between gap-3">
+          <div className="grid gap-1">
+            <p className="text-sm text-muted">Gasto estimado este mes</p>
+            <p className="text-sm text-muted">
+              {aiMonth.calls === 1 ? "1 consulta" : `${aiMonth.calls} consultas`}
+              {aiMonth.failed > 0 ? ` (${aiMonth.failed} fallidas)` : ""} ·{" "}
+              {formatKcal(aiMonth.inputTokens + aiMonth.outputTokens)} tokens
+            </p>
+          </div>
+          <p className="text-2xl font-semibold tabular-nums text-ink">
+            {aiMonth.costIncomplete ? "≥ " : ""}
+            {formatUsd(aiMonth.costUsd)}
+          </p>
+        </div>
+      </section>
 
       <section className="grid gap-4 rounded-lg border border-line bg-white p-4">
         <div className="grid gap-1">
