@@ -88,7 +88,7 @@ export async function saveFoodEntry(values: {
   quantity: string;
   unit: string;
   /** How the food was found; only new entries take it. */
-  source?: "library" | "barcode";
+  source?: "library" | "barcode" | "label";
 }): Promise<{ error: string } | null> {
   await requireCurrentUser();
 
@@ -126,7 +126,7 @@ export async function saveFoodEntry(values: {
         data: {
           ...data,
           day: values.day,
-          source: values.source === "barcode" ? "barcode" : "library"
+          source: values.source === "barcode" || values.source === "label" ? values.source : "library"
         }
       }),
       prisma.food.update({ where: { id: food.id }, data: { lastUsedAt: new Date() } })

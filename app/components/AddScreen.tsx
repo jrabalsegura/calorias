@@ -19,6 +19,7 @@ import { FoodEntrySheet, type FoodSheetTarget } from "./FoodEntrySheet";
 import {
   BarcodeIcon,
   BoltIcon,
+  CameraIcon,
   CloseIcon,
   PlusIcon,
   RepeatIcon,
@@ -26,7 +27,7 @@ import {
   StarIcon,
   TextIcon
 } from "./icons";
-import { addHref, diaryHref, scanHref, textHref } from "./links";
+import { addHref, diaryHref, labelHref, scanHref, textHref } from "./links";
 import { PageHeader } from "./PageHeader";
 
 const SEARCH_LIMIT = 40;
@@ -147,6 +148,12 @@ export function AddScreen({
               <TextIcon />
             </span>
             Describir lo que has comido
+          </Link>
+          <Link className="secondary-button w-full gap-2" href={labelHref(day, meal)}>
+            <span className="text-accent">
+              <CameraIcon />
+            </span>
+            Foto de la etiqueta
           </Link>
           <div className="grid grid-cols-3 gap-2">
             <ShortcutButton

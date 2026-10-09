@@ -1,0 +1,25 @@
+{
+  "note": "ketchup Heinz, etiqueta en español",
+  "photo": "https://images.openfoodfacts.org/images/products/871/570/040/7760/nutrition_es.104.full.jpg",
+  "answer": {
+    "readable": true,
+    "problem": "",
+    "name": "",
+    "brand": "",
+    "baseUnit": "g",
+    "basis": "per100",
+    "energyKcal": 112,
+    "energyKj": 476,
+    "protein": 1.4,
+    "carbs": 25.3,
+    "fat": 0.1,
+    "servingAmount": null
+  },
+  "expected": {
+    "baseUnit": "g",
+    "kcalPer100": 112,
+    "warnings": [
+      "La foto no muestra el nombre"
+    ]
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "note": "bebida de almendra Alpro, brik",
+  "photo": "https://images.openfoodfacts.org/images/products/541/118/811/0835/nutrition_en.619.full.jpg",
+  "answer": {
+    "readable": true,
+    "problem": "",
+    "name": "Bebida de almendra",
+    "brand": "",
+    "baseUnit": "ml",
+    "basis": "per100",
+    "energyKcal": 24,
+    "energyKj": 99,
+    "protein": 0.5,
+    "carbs": 2.7,
+    "fat": 1.1,
+    "servingAmount": null
+  },
+  "expected": {
+    "baseUnit": "ml",
+    "kcalPer100": 24
+  }
+}

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState, useTransition } from "react";
 import { formatRelativeDay } from "@/domain/day";
@@ -12,7 +13,8 @@ import type { ScannedProductData } from "../(app)/foods/actions";
 import { BarcodeScanner } from "./BarcodeScanner";
 import { FoodEntrySheet } from "./FoodEntrySheet";
 import { FoodForm } from "./FoodForm";
-import { addHref, diaryHref, scanHref } from "./links";
+import { CameraIcon } from "./icons";
+import { addHref, diaryHref, labelHref, scanHref } from "./links";
 import { PageHeader } from "./PageHeader";
 
 /** A product to create by hand, with whatever is known of it. */
@@ -56,7 +58,7 @@ function viewFor(result: ScanResult): View {
       return {
         kind: "manual",
         product: {
-          reason: "No está en Open Food Facts. Créalo con los datos de la etiqueta.",
+          reason: "No está en Open Food Facts. Haz una foto de la etiqueta o créalo a mano.",
           scanned: { barcode: result.barcode },
           imageUrl: null,
           warnings: []
@@ -153,6 +155,13 @@ export function ScanScreen({
             ))}
           </div>
         </section>
+        <Link
+          className="primary-button w-full gap-2"
+          href={labelHref(day, meal, product.scanned.barcode)}
+        >
+          <CameraIcon />
+          Leer la etiqueta con una foto
+        </Link>
         <FoodForm
           food={null}
           initialName=""

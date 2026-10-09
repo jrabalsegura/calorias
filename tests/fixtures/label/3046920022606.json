@@ -1,0 +1,22 @@
+{
+  "note": "chocolate Lindt 85 %",
+  "photo": "https://images.openfoodfacts.org/images/products/304/692/002/2606/nutrition_fr.263.full.jpg",
+  "answer": {
+    "readable": true,
+    "problem": "",
+    "name": "Chocolate negro 85% cacao",
+    "brand": "Lindt",
+    "baseUnit": "g",
+    "basis": "per100",
+    "energyKcal": 584,
+    "energyKj": 2418,
+    "protein": 12.5,
+    "carbs": 22,
+    "fat": 46,
+    "servingAmount": null
+  },
+  "expected": {
+    "baseUnit": "g",
+    "kcalPer100": 584
+  }
+}

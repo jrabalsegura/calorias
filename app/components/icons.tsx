@@ -119,3 +119,12 @@ export function TrashIcon() {
     </Icon>
   );
 }
+
+export function CameraIcon() {
+  return (
+    <Icon>
+      <path d="M4 8a1 1 0 0 1 1-1h3l1.5-2h5L16 7h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z" />
+      <circle cx="12" cy="13" r="3.5" />
+    </Icon>
+  );
+}

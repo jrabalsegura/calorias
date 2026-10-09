@@ -117,6 +117,19 @@ const macroOrNull = (value: unknown) =>
     ? value
     : null;
 
+/** Macros sent along with a food form, kept only if they can be grams per 100. */
+export function parseMacroExtras(raw: {
+  proteinPer100?: unknown;
+  carbsPer100?: unknown;
+  fatPer100?: unknown;
+}): Pick<ScanExtras, "proteinPer100" | "carbsPer100" | "fatPer100"> {
+  return {
+    proteinPer100: macroOrNull(raw.proteinPer100),
+    carbsPer100: macroOrNull(raw.carbsPer100),
+    fatPer100: macroOrNull(raw.fatPer100)
+  };
+}
+
 /**
  * Validates what the scanner screen sends along with the food form when a
  * product has to be completed by hand. Null when the barcode is not valid.
@@ -133,8 +146,6 @@ export function parseScanExtras(raw: {
   return {
     barcode,
     imageUrl: isOffImageUrl(raw.imageUrl) ? raw.imageUrl : null,
-    proteinPer100: macroOrNull(raw.proteinPer100),
-    carbsPer100: macroOrNull(raw.carbsPer100),
-    fatPer100: macroOrNull(raw.fatPer100)
+    ...parseMacroExtras(raw)
   };
 }

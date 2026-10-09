@@ -26,7 +26,7 @@ export const OFF_FIELDS = [
   "image_url"
 ] as const;
 
-const KJ_PER_KCAL = 4.184;
+export const KJ_PER_KCAL = 4.184;
 
 /** Portion names given to the serving and the package of a product. */
 export const SERVING_PORTION_NAME = "ración";
