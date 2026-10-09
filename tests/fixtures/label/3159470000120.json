@@ -1,0 +1,25 @@
+{
+  "note": "Corn Flakes, caja",
+  "photo": "https://images.openfoodfacts.org/images/products/315/947/000/0120/nutrition_en.119.full.jpg",
+  "answer": {
+    "readable": true,
+    "problem": "",
+    "name": "",
+    "brand": "",
+    "baseUnit": "g",
+    "basis": "per100",
+    "energyKcal": 378,
+    "energyKj": 1604,
+    "protein": 7,
+    "carbs": 84,
+    "fat": 0.9,
+    "servingAmount": 30
+  },
+  "expected": {
+    "baseUnit": "g",
+    "kcalPer100": 378,
+    "warnings": [
+      "La foto no muestra el nombre"
+    ]
+  }
+}

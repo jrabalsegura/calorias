@@ -21,7 +21,7 @@ bajar y, con unas semanas de datos, se reajusta a tu gasto real.
 | 5 | Biblioteca de alimentos y cantidades | Hecha |
 | 6 | Código de barras | Hecha |
 | 7 | Descripción en texto (IA) | Hecha |
-| 8 | Foto de la etiqueta (IA) | Pendiente |
+| 8 | Foto de la etiqueta (IA) | Implementada (falta desplegar) |
 | 9 | Resumen semanal y objetivo adaptativo | Pendiente |
 | 10 | Calidad de vida | Pendiente |
 
@@ -98,7 +98,7 @@ de salida (Opus 5.5, el doble).
 | Uso | Coste aproximado |
 |---|---|
 | Desglosar una descripción (medido en la fase 7: ~1.700 tokens de entrada y 100-300 de salida) | ~0,5 céntimos de dólar |
-| Leer una etiqueta (foto reducida a unos 1.500 px) | 1-2 céntimos |
+| Leer una etiqueta (medido en la fase 8: foto de 1.500 px, ~3.000-3.700 tokens de entrada y ~100 de salida) | ~0,8 céntimos de dólar |
 | Uso diario personal (unas 3 descripciones al día y alguna etiqueta) | **menos de 1 $ al mes** |
 
 Cada etiqueta se lee una sola vez, porque el producto queda guardado. Se puede
@@ -661,11 +661,63 @@ nutricional, reutilizando la integración con la IA de la fase 7.
 
 ### Criterios de aceptación
 
-- [ ] Probado con 5-10 etiquetas reales (incluidas una que solo trae kJ y una
+- [x] Probado con 5-10 etiquetas reales (incluidas una que solo trae kJ y una
       foto mal iluminada): valores correctos o aviso.
-- [ ] Tras guardar un producto por foto, su código de barras se reconoce al
+- [x] Tras guardar un producto por foto, su código de barras se reconoce al
       instante.
-- [ ] Tests del validador y del procesado de respuestas guardadas.
+- [x] Tests del validador y del procesado de respuestas guardadas.
+
+Verificado en local (09-10-2026) con `claude-sonnet-5-5` y esfuerzo `low`:
+`make check` en verde. `scripts/eval-label.ts` lee con la API real las fotos
+de la tabla nutricional que la gente sube a Open Food Facts (en memoria, sin
+guardarlas) de 8 productos que se venden en España (galletas Gullón, ketchup
+Heinz, Nutella, bebida de almendra Alpro, Lindt 85 %, Corn Flakes, Wasa y una
+Coca-Cola cuya «foto de la tabla» es el frontal de la lata): las 7 con tabla
+dan las kcal, los macros y la ración de la etiqueta (con fotos curvadas, en
+otros idiomas y sin el nombre a la vista, que se pide escribir), y la lata
+da «No se lee la tabla nutricional» con la alternativa a mano. Tras la
+primera pasada se ajustó el prompt para que `problem` solo hable de números
+dudosos (no del idioma ni de que falte el nombre). Sus respuestas están en
+`tests/fixtures/label/`. `src/domain/label.test.ts` cubre solo kJ, los kJ
+leídos también como kcal, kJ y kcal cambiados, kcal y kJ que no cuadran,
+una sola cifra que es kJ (por pasar de 900 o porque lo delatan los macros),
+macros que no cuadran, valores solo por ración, la foto y su reducción. En
+vista móvil (375 px) con una BD de prueba, con fotos generadas en la página
+de 3.000 px (el navegador de pruebas no tiene cámara): un código que OFF no
+conoce → *Leer la etiqueta con una foto* → etiqueta que **solo trae kJ**
+(1.580 kJ) → 377,6 kcal con aviso, nombre y marca rellenos → *Crear
+alimento* → selector de cantidad → 40 g → *Hoy* (151 kcal, origen `label`;
+el alimento, con `source: label`, código y macros). Escribir de nuevo el
+código en el escáner abre el producto al instante con 40 g y sin consultar
+OFF. Una foto **oscura y con ruido** de un yogur griego se lee bien (128
+kcal), y una sin tabla da el aviso con *Escribirlo a mano*. Cada lectura
+tarda 2-2,5 s y cuesta unos 0,8 céntimos; *Ajustes* las suma al gasto.
+**Pendiente: la prueba en el móvil real con la cámara**, que se hará al
+final.
+
+Decisiones:
+
+- *Foto de la etiqueta* (`/add/label?day=&meal=`) se abre desde *Añadir* y,
+  con `&barcode=`, desde el producto no encontrado o incompleto del escáner
+  («Leer la etiqueta con una foto»). Dos botones: *Hacer la foto*
+  (`capture="environment"`) y *Elegir de la galería*.
+- La foto se reduce en el móvil con un canvas a 1.500 px de lado mayor
+  (JPEG al 85 %) y va en base64 a una server action
+  (`serverActions.bodySizeLimit: 6mb`; nginx ya admite 10 MB). No se guarda.
+- La IA copia lo que pone la etiqueta (kcal y kJ por separado, macros
+  totales, base por 100 o por ración, tamaño de ración) y dice si algo no
+  se lee; las conversiones y comprobaciones se hacen en
+  `src/domain/label.ts`: kcal desde kJ si solo hay kJ, la misma cifra en
+  los dos campos (eran kJ), kJ y kcal cambiados, una sola cifra que pasa de
+  900 o que con los macros resulta ser kJ, kcal frente a kJ (>10 %) y frente
+  a 4·P + 4·H + 9·G (>20 %), y valores por ración pasados a 100. Todo sale
+  como aviso en la revisión.
+- La revisión es el formulario de alimento con lo leído; al crear el
+  alimento (`source: label`, macros guardados, código si venía de uno) se
+  abre el selector de cantidad y las entradas se guardan con
+  `source: label`. Una lectura fallida ofrece *Escribirlo a mano*.
+- `requestJson` acepta bloques de contenido (la foto y el texto) y las
+  llamadas quedan en `AiCall` con `kind: label`.
 
 **Hito: todas las formas de registrar disponibles.**
 

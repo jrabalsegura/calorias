@@ -1,0 +1,25 @@
+{
+  "note": "pan crujiente Wasa",
+  "photo": "https://images.openfoodfacts.org/images/products/730/040/048/1595/nutrition_fr.258.full.jpg",
+  "answer": {
+    "readable": true,
+    "problem": "",
+    "name": "",
+    "brand": "",
+    "baseUnit": "g",
+    "basis": "per100",
+    "energyKcal": 336,
+    "energyKj": 1415,
+    "protein": 9,
+    "carbs": 62,
+    "fat": 1.5,
+    "servingAmount": 11.4
+  },
+  "expected": {
+    "baseUnit": "g",
+    "kcalPer100": 336,
+    "warnings": [
+      "La foto no muestra el nombre"
+    ]
+  }
+}

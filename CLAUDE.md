@@ -57,6 +57,11 @@ Un test concreto: `node --import tsx --test --test-name-pattern "session" tests/
   `src/domain/textEstimate.ts`; precios y gasto en `src/domain/aiUsage.ts`;
   la llamada (`requestJson`, que registra cada `AiCall`) en `src/lib/claude.ts`.
   `scripts/eval-text.ts` pasa las descripciones de prueba contra la API real.
+- Etiqueta (`/add/label`): esquema, prompt y comprobaciones kJ/kcal/macros
+  en `src/domain/label.ts` (respuestas reales en `tests/fixtures/label/`),
+  la llamada en `src/lib/labelReading.ts`; la foto se reduce en el móvil
+  (`LabelScreen`). `scripts/eval-label.ts` lee fotos de etiquetas de OFF con
+  la API real.
 - `proxy.ts` (el antiguo middleware; runtime Node): valida la cookie firmada y `sessionVersion`
   contra la BD en cada petición y la renueva (sesión deslizante de 180 días).
   Las rutas públicas (login, health, manifest, iconos, `sw.js`) están en

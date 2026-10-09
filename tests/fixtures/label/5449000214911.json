@@ -1,0 +1,21 @@
+{
+  "note": "Coca-Cola en lata, por 100 ml",
+  "photo": "https://images.openfoodfacts.org/images/products/544/900/021/4911/nutrition_en.134.full.jpg",
+  "answer": {
+    "readable": false,
+    "problem": "No se ve la tabla nutricional, solo la parte frontal de la lata de Coca-Cola",
+    "name": "Coca-Cola",
+    "brand": "Coca-Cola",
+    "baseUnit": "ml",
+    "basis": "per100",
+    "energyKcal": null,
+    "energyKj": null,
+    "protein": null,
+    "carbs": null,
+    "fat": null,
+    "servingAmount": null
+  },
+  "expected": {
+    "error": true
+  }
+}

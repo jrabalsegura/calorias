@@ -82,7 +82,16 @@ function logError(kind: string, error: unknown) {
  */
 export async function requestJson(
   kind: string,
-  { system, prompt, schema }: { system: string; prompt: string; schema: Record<string, unknown> }
+  {
+    system,
+    prompt,
+    schema
+  }: {
+    system: string;
+    /** Text, or content blocks such as a photo followed by the text. */
+    prompt: string | Anthropic.Beta.BetaContentBlockParam[];
+    schema: Record<string, unknown>;
+  }
 ): Promise<unknown> {
   const { configured, model, effort } = aiSettings();
   if (!configured) {
@@ -124,17 +133,17 @@ export async function requestJson(
     };
 
     if (response.stop_reason === "refusal") {
-      throw new AiError("La IA no ha querido responder a esta descripción. Escríbela de otra forma.");
+      throw new AiError("La IA no ha querido responder a esta petición. Prueba de otra forma.");
     }
     if (response.stop_reason === "max_tokens") {
-      throw new AiError("La respuesta de la IA se ha cortado. Prueba con una descripción más corta.");
+      throw new AiError("La respuesta de la IA se ha cortado. Prueba otra vez.");
     }
     const text = response.content.flatMap((block) => (block.type === "text" ? [block.text] : [])).join("");
     let parsed: unknown;
     try {
       parsed = JSON.parse(text);
     } catch {
-      throw new AiError("La IA no ha devuelto un desglose válido. Prueba otra vez.");
+      throw new AiError("La IA no ha devuelto una respuesta válida. Prueba otra vez.");
     }
     ok = true;
     return parsed;

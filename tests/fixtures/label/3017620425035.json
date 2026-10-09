@@ -1,0 +1,25 @@
+{
+  "note": "Nutella, tarro",
+  "photo": "https://images.openfoodfacts.org/images/products/301/762/042/5035/nutrition_en.588.full.jpg",
+  "answer": {
+    "readable": true,
+    "problem": "",
+    "name": "",
+    "brand": "",
+    "baseUnit": "g",
+    "basis": "per100",
+    "energyKcal": 539,
+    "energyKj": 2252,
+    "protein": 6.3,
+    "carbs": 57.5,
+    "fat": 30.9,
+    "servingAmount": 15
+  },
+  "expected": {
+    "baseUnit": "g",
+    "kcalPer100": 539,
+    "warnings": [
+      "La foto no muestra el nombre"
+    ]
+  }
+}

@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { parseScanExtras } from "@/domain/barcode";
+import { parseMacroExtras, parseScanExtras } from "@/domain/barcode";
 import {
   foodFromEntry,
   isBaseUnit,
@@ -19,9 +19,14 @@ function portionRows(portions: FoodInput["portions"]) {
   return portions.map((portion, position) => ({ ...portion, position }));
 }
 
-/** What the scanner knows of a product the user creates by hand. */
+/**
+ * What the scanner or a photo of the label knows of a product the user
+ * creates by hand. A label may come without a barcode.
+ */
 export type ScannedProductData = {
-  barcode: string;
+  barcode: string | null;
+  /** Read from a photo of the label (source `label`). */
+  fromLabel?: boolean;
   imageUrl?: string | null;
   proteinPer100?: number | null;
   carbsPer100?: number | null;
@@ -44,8 +49,9 @@ export async function saveFood(
   if (!parsed.ok) return { error: parsed.error };
   const { portions, ...data } = parsed.value;
 
-  const extras = scanned && !id ? parseScanExtras(scanned) : null;
-  if (scanned && !id && !extras) return { error: "El código de barras no es válido." };
+  const fromLabel = Boolean(scanned?.fromLabel) && !id;
+  const extras = scanned?.barcode && !id ? parseScanExtras(scanned) : null;
+  if (scanned?.barcode && !id && !extras) return { error: "El código de barras no es válido." };
   if (extras) {
     const other = await prisma.food.findUnique({
       where: { barcode: extras.barcode },
@@ -71,9 +77,10 @@ export async function saveFood(
     const food = await prisma.food.create({
       data: {
         ...data,
+        ...(fromLabel ? parseMacroExtras(scanned!) : null),
         ...extras,
         favorite,
-        source: extras ? "barcode" : "manual",
+        source: fromLabel ? "label" : extras ? "barcode" : "manual",
         portions: { create: portionRows(portions) }
       },
       select: { id: true }

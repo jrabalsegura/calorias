@@ -19,3 +19,8 @@ export function scanHref(day: string, meal: Meal): string {
 export function textHref(day: string, meal: Meal): string {
   return `/add/text?day=${day}&meal=${meal}`;
 }
+
+/** The photo-of-the-label screen, with the barcode it was opened from. */
+export function labelHref(day: string, meal: Meal, barcode?: string | null): string {
+  return `/add/label?day=${day}&meal=${meal}${barcode ? `&barcode=${barcode}` : ""}`;
+}

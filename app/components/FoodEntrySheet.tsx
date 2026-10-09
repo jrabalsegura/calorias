@@ -48,8 +48,8 @@ export function FoodEntrySheet({
   onClose: () => void;
   onSaved?: () => void;
   /** How the food was found, saved with new entries. */
-  source?: "library" | "barcode";
-  /** Doubts about the food's data (a product just read from Open Food Facts). */
+  source?: "library" | "barcode" | "label";
+  /** Doubts about the food's data (a product just read from Open Food Facts or a label). */
   warnings?: string[];
   /** Where to correct the food when there are warnings. */
   editHref?: string;
