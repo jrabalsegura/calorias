@@ -22,7 +22,7 @@ bajar y, con unas semanas de datos, se reajusta a tu gasto real.
 | 6 | Código de barras | Hecha |
 | 7 | Descripción en texto (IA) | Hecha |
 | 8 | Foto de la etiqueta (IA) | Hecha |
-| 9 | Resumen semanal y objetivo adaptativo | Implementada (falta desplegar y comprobar con datos reales) |
+| 9 | Resumen semanal y objetivo adaptativo | Hecha (falta comprobar con datos reales) |
 | 10 | Calidad de vida | Pendiente |
 
 Hitos:
@@ -822,6 +822,9 @@ DATABASE_URL=file:/ruta/a/calorias.db node --import tsx scripts/check-in-report.
 La copia aún no tiene las tablas de esta fase (el script lee también
 `DiaryDay`), así que antes hay que aplicarle las migraciones en la carpeta
 temporal (`DATABASE_URL=… npx prisma migrate deploy`).
+
+Desplegada en `remote` el 09-10-2026 (`2fc8cef`, migración `weekly_check_in`
+aplicada, copia previa de SQLite y smoke test local y por HTTPS correctos).
 
 ---
 
