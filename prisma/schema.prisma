@@ -111,3 +111,30 @@ model AiCall {
 
   @@index([day])
 }
+
+// A day the user marked as complete or incomplete, overriding the automatic
+// rule (a day with very few kcal counts as incomplete). Incomplete days are
+// left out of the summary and of the real expenditure estimate.
+model DiaryDay {
+  day       String   @id // YYYY-MM-DD in Europe/Madrid
+  status    String // complete | incomplete
+  updatedAt DateTime @updatedAt
+}
+
+// The weekly check-in: the real expenditure estimated from intake and the
+// weight trend, and the target it proposed. The latest accepted one sets
+// the expenditure the target is calculated from (src/domain/adaptive.ts).
+model WeeklyCheckIn {
+  id             String   @id @default(cuid())
+  weekStart      String   @unique // Monday YYYY-MM-DD; data up to the day before
+  intakeKcal     Int // average of the counted days of the window
+  countedDays    Int
+  trendChangeKg  Float // trend change over weightSpanDays (negative: lost)
+  weightSpanDays Int
+  rawTdee        Int // before smoothing
+  estimatedTdee  Int
+  previousTarget Int
+  proposedTarget Int
+  accepted       Boolean
+  createdAt      DateTime @default(now())
+}

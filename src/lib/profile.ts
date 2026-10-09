@@ -9,7 +9,12 @@ import {
 } from "@/domain/target";
 import { currentTrendKg, type WeighIn } from "@/domain/weight";
 
-export type StoredProfile = ProfileInput;
+export type StoredProfile = ProfileInput & {
+  /** Expenditure of the latest accepted check-in, which replaces the formula. */
+  adaptiveTdee: number | null;
+  /** Monday of that check-in. */
+  adaptiveSince: string | null;
+};
 
 /** Every weigh-in, oldest first. */
 export function loadWeighIns(): Promise<WeighIn[]> {
@@ -25,9 +30,14 @@ export function loadWeighIns(): Promise<WeighIn[]> {
  * wizard is done.
  */
 export async function loadProfile(): Promise<StoredProfile | null> {
-  const [profile, weighIns] = await Promise.all([
+  const [profile, weighIns, checkIn] = await Promise.all([
     prisma.profile.findFirst(),
-    loadWeighIns()
+    loadWeighIns(),
+    prisma.weeklyCheckIn.findFirst({
+      where: { accepted: true },
+      orderBy: { weekStart: "desc" },
+      select: { weekStart: true, estimatedTdee: true }
+    })
   ]);
   const weightKg = currentTrendKg(weighIns);
   if (
@@ -48,7 +58,9 @@ export async function loadProfile(): Promise<StoredProfile | null> {
     targetWeightKg: profile.targetWeightKg,
     activity: profile.activity,
     pace: profile.pace,
-    manualTargetKcal: profile.manualTargetKcal
+    manualTargetKcal: profile.manualTargetKcal,
+    adaptiveTdee: checkIn?.estimatedTdee ?? null,
+    adaptiveSince: checkIn?.weekStart ?? null
   };
 }
 

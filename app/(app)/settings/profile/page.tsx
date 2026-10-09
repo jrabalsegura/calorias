@@ -78,6 +78,8 @@ export default async function ProfilePage() {
         </p>
       )}
       <ProfileForm
+        adaptiveSince={profile?.adaptiveSince ?? null}
+        adaptiveTdee={profile?.adaptiveTdee ?? null}
         consumedToday={consumed._sum.kcal ?? 0}
         initial={initial}
         today={today}

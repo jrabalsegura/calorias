@@ -34,12 +34,17 @@ export function ProfileForm({
   initial,
   today,
   consumedToday,
-  wizard
+  wizard,
+  adaptiveTdee = null,
+  adaptiveSince = null
 }: {
   initial: ProfileFormValues;
   today: string;
   consumedToday: number;
   wizard: boolean;
+  /** Real expenditure of the latest accepted check-in. */
+  adaptiveTdee?: number | null;
+  adaptiveSince?: string | null;
 }) {
   const [values, setValues] = useState(initial);
   const [manual, setManual] = useState(initial.manualTargetKcal !== "");
@@ -52,7 +57,7 @@ export function ProfileForm({
     manualTargetKcal: manual ? values.manualTargetKcal : ""
   };
   const parsed = parseProfileInput(submitted, today);
-  const preview = parsed.ok ? calculateTarget({ ...parsed.value, today }) : null;
+  const preview = parsed.ok ? calculateTarget({ ...parsed.value, today, adaptiveTdee }) : null;
   const progress = preview ? dayProgress(consumedToday, preview.target) : null;
 
   const visibleSteps = wizard ? [STEPS[step]] : STEPS;
@@ -277,6 +282,7 @@ export function ProfileForm({
           className="grid gap-3 rounded-lg border border-line bg-white p-4"
         >
           <TargetBreakdown
+            adaptiveSince={adaptiveSince}
             pace={parsed.ok ? parsed.value.pace : "maintain"}
             result={preview}
             today={today}

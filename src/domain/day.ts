@@ -119,3 +119,8 @@ export function formatShortDay(day: string, today: string): string {
   const format = day.slice(0, 4) === today.slice(0, 4) ? shortDate : shortDateWithYear;
   return format.format(toUtcDate(day)).replace(/\./g, "");
 }
+
+/** Monday of the week the day belongs to. */
+export function weekStart(day: string): string {
+  return addDays(day, -weekdayIndex(day));
+}

@@ -22,7 +22,7 @@ bajar y, con unas semanas de datos, se reajusta a tu gasto real.
 | 6 | Código de barras | Hecha |
 | 7 | Descripción en texto (IA) | Hecha |
 | 8 | Foto de la etiqueta (IA) | Hecha |
-| 9 | Resumen semanal y objetivo adaptativo | Pendiente |
+| 9 | Resumen semanal y objetivo adaptativo | Implementada (falta desplegar y comprobar con datos reales) |
 | 10 | Calidad de vida | Pendiente |
 
 Hitos:
@@ -755,11 +755,73 @@ una fórmula genérica.
 
 ### Criterios de aceptación
 
-- [ ] Tests con escenarios sintéticos (pierde más de lo previsto, se estanca,
+- [x] Tests con escenarios sintéticos (pierde más de lo previsto, se estanca,
       datos insuficientes, días sin registrar): los ajustes son razonables y
       están acotados.
 - [ ] Con los datos reales acumulados desde la fase 2, la estimación es
-      coherente con tu evolución.
+      coherente con tu evolución. **Pendiente**: se comprueba con
+      `scripts/check-in-report.ts` sobre la copia de producción (ver abajo).
+
+Verificado en local (09-10-2026): `make check` en verde.
+`src/domain/adaptive.test.ts` cubre, con series sintéticas de 60 días: perder
+0,75 kg/semana comiendo 1.750 (gasto ≈ 2.575; la estimación sube de 2.300 a
+≈ 2.440 y el objetivo a ≈ 1.890), estancarse (baja 150 kcal por semana y el
+objetivo se queda en el mínimo de 1.500 con su explicación), comer lo
+estimado (no se mueve), menos de 14 días completos, menos de 3 pesajes o
+pesajes que no abarcan 2 semanas, días sin registrar, con pocas kcal o
+marcados (fuera de la media; uno con pocas kcal marcado como completo sí
+cuenta), pesajes semanales, saltos de agua de ±3-4 kg (limitados a 150
+kcal), la estimación anterior caducada, el objetivo manual y el mensaje.
+`src/domain/summary.test.ts` cubre el estado de cada día, los colores, las
+medias, las semanas con su tendencia y el calendario. Con una BD sintética
+de 12 semanas (come ≈ 2.100 y baja 0,4 kg/semana, gasto real ≈ 2.540),
+`scripts/check-in-report.ts` lleva la estimación de la fórmula (2.747) a
+2.540-2.580 en cuatro semanas. En vista móvil (375 px) con esa BD: aviso
+«Check-in semanal listo» en *Hoy*; en *Resumen* la propuesta con el
+desglose, medias de 7 y 30 días, calendario de octubre y septiembre con
+colores y días incompletos, semanas con la tendencia e historial; abrir un
+día con solo un café desde el calendario → «Está completo» → cuenta en la
+media; *Aceptar* → *Hoy*, *Ajustes* y el calendario usan el nuevo objetivo
+y *Ajustes* muestra «Gasto real estimado» junto al de la fórmula; con un
+objetivo manual, el aviso de que aceptarlo lo quita y *Mantener* lo
+conserva; sin datos suficientes, qué falta.
+
+Decisiones:
+
+- **Días incompletos**: los que tienen menos de 800 kcal o los marcados en
+  *Hoy* («Marcar incompleto» / «Está completo», tabla `DiaryDay`). No cuentan
+  ni para las medias ni para el gasto. Hoy tampoco cuenta en las medias,
+  porque aún se está apuntando.
+- **Resumen**: medias de los últimos 7 y 30 días (en vez de semana y mes
+  naturales, para que el lunes no salga vacío), días dentro del objetivo,
+  calendario mensual (verde ≤ objetivo, ámbar hasta +10 %, rojo por encima,
+  discontinuo incompleto; cada día abre su diario), las 8 últimas semanas
+  con el peso de tendencia y su cambio, e historial de check-ins. Todos los
+  días se miden contra el objetivo actual, como en *Hoy*.
+- **Gasto real** (`src/domain/adaptive.ts`): media de los días completos de
+  las 4 semanas hasta el domingo anterior − cambio de la tendencia entre el
+  primer y el último pesaje de esas semanas × 7.700 / días. Exige 14 días
+  completos y 3 pesajes que abarquen 14 días. Se acerca a la mitad de la
+  distancia desde la estimación anterior (la del último check-in si es de
+  las últimas 5 semanas; si no, la fórmula), con un cambio máximo de 150
+  kcal por semana, y se redondea a 10 kcal.
+- **Check-in**: uno por semana (lunes), calculado al abrir *Resumen* o *Hoy*;
+  la propuesta se recalcula en el servidor al responder. Al aceptarlo, su
+  gasto sustituye a la fórmula (la actividad deja de influir; *Ajustes*
+  muestra ambos) y se quita el objetivo manual si lo había. Mantenerlo deja
+  el objetivo como estaba. Los dos quedan en `WeeklyCheckIn` y en el
+  historial. El objetivo propuesto pasa por los mismos límites de la fase 3.
+
+Para el criterio pendiente, con una copia reciente (`make backup-pull`)
+extraída en una carpeta temporal:
+
+```bash
+DATABASE_URL=file:/ruta/a/calorias.db node --import tsx scripts/check-in-report.ts 8
+```
+
+La copia aún no tiene las tablas de esta fase (el script lee también
+`DiaryDay`), así que antes hay que aplicarle las migraciones en la carpeta
+temporal (`DATABASE_URL=… npx prisma migrate deploy`).
 
 ---
 

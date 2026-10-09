@@ -62,6 +62,12 @@ Un test concreto: `node --import tsx --test --test-name-pattern "session" tests/
   la llamada en `src/lib/labelReading.ts`; la foto se reduce en el móvil
   (`LabelScreen`). `scripts/eval-label.ts` lee fotos de etiquetas de OFF con
   la API real.
+- Resumen (`/summary`): días completos/incompletos, medias, semanas y
+  calendario en `src/domain/summary.ts`; gasto real y check-in semanal en
+  `src/domain/adaptive.ts`, con la carga en `src/lib/summary.ts`. El último
+  `WeeklyCheckIn` aceptado sustituye a la fórmula del gasto
+  (`adaptiveTdee` en `calculateTarget`). `scripts/check-in-report.ts` repite
+  los check-ins sobre una BD (solo lectura).
 - `proxy.ts` (el antiguo middleware; runtime Node): valida la cookie firmada y `sessionVersion`
   contra la BD en cada petición y la renueva (sesión deslizante de 180 días).
   Las rutas públicas (login, health, manifest, iconos, `sw.js`) están en
