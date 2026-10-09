@@ -21,7 +21,7 @@ bajar y, con unas semanas de datos, se reajusta a tu gasto real.
 | 5 | Biblioteca de alimentos y cantidades | Hecha |
 | 6 | Código de barras | Hecha |
 | 7 | Descripción en texto (IA) | Hecha |
-| 8 | Foto de la etiqueta (IA) | Implementada (falta desplegar) |
+| 8 | Foto de la etiqueta (IA) | Hecha |
 | 9 | Resumen semanal y objetivo adaptativo | Pendiente |
 | 10 | Calidad de vida | Pendiente |
 
@@ -718,6 +718,9 @@ Decisiones:
   `source: label`. Una lectura fallida ofrece *Escribirlo a mano*.
 - `requestJson` acepta bloques de contenido (la foto y el texto) y las
   llamadas quedan en `AiCall` con `kind: label`.
+
+Desplegada en `remote` el 09-10-2026 (`c23fbcc`, sin migraciones nuevas,
+copia previa de SQLite y smoke test local y por HTTPS correctos).
 
 **Hito: todas las formas de registrar disponibles.**
 
