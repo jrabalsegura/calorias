@@ -5,6 +5,7 @@ import { isValidDay } from "@/domain/day";
 import { parseEntryInput } from "@/domain/diary";
 import { copyEntries, foodEntryName, parseQuantityInput } from "@/domain/food";
 import { isMeal } from "@/domain/meals";
+import { isDayMark, type DayMark } from "@/domain/summary";
 import { requireCurrentUser } from "@/lib/auth";
 import { toLibraryFood, foodSelect } from "@/lib/foods";
 import { prisma } from "@/lib/prisma";
@@ -170,4 +171,24 @@ export async function copyDiaryEntries(values: {
 
   revalidatePath("/", "layout");
   return null;
+}
+
+/**
+ * Marks a day as complete or incomplete for the summary and the
+ * expenditure estimate, or back to automatic with null.
+ */
+export async function setDayMark(day: string, mark: DayMark | null): Promise<void> {
+  await requireCurrentUser();
+
+  if (!isValidDay(day) || (mark !== null && !isDayMark(mark))) return;
+  if (mark === null) {
+    await prisma.diaryDay.deleteMany({ where: { day } });
+  } else {
+    await prisma.diaryDay.upsert({
+      where: { day },
+      create: { day, status: mark },
+      update: { status: mark }
+    });
+  }
+  revalidatePath("/", "layout");
 }

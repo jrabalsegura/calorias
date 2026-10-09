@@ -310,3 +310,18 @@ function addDaysForTest(days: number) {
   const date = new Date(Date.UTC(2026, 9, 8 + days));
   return date.toISOString().slice(0, 10);
 }
+
+test("an adaptive expenditure replaces the formula and keeps the safety floor", () => {
+  const formula = calculateTarget(MAN);
+  const adaptive = calculateTarget({ ...MAN, adaptiveTdee: 2400 });
+  assert.equal(adaptive.formulaTdee, formula.tdee);
+  assert.equal(adaptive.tdee, 2400);
+  assert.equal(adaptive.tdeeIsAdaptive, true);
+  assert.equal(formula.tdeeIsAdaptive, false);
+  assert.equal(adaptive.target, 1850);
+  assert.equal(adaptive.kgPerWeek, 0.5);
+
+  const low = calculateTarget({ ...MAN, adaptiveTdee: 1800 });
+  assert.equal(low.target, 1500);
+  assert.equal(low.floorApplied, true);
+});

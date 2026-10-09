@@ -119,12 +119,21 @@ export type TargetInput = {
   manualTargetKcal: number | null;
   weightKg: number;
   today: string;
+  /**
+   * Real expenditure of the latest accepted weekly check-in. When set it
+   * replaces the formula (basal × activity).
+   */
+  adaptiveTdee?: number | null;
 };
 
 export type TargetResult = {
   age: number;
   bmr: number;
+  /** Expenditure the target is based on: the adaptive one if any, else the formula. */
   tdee: number;
+  /** Basal × activity factor. */
+  formulaTdee: number;
+  tdeeIsAdaptive: boolean;
   /** Deficit asked for by the chosen pace. */
   requestedDeficit: number;
   /** Formula target after the safety floor. */
@@ -154,7 +163,9 @@ export function calculateTarget(input: TargetInput): TargetResult {
   const age = ageOn(input.birthDate, input.today);
   const bmrRaw = basalMetabolicRate({ ...input, age });
   const bmr = Math.round(bmrRaw);
-  const tdee = Math.round(bmrRaw * activityOf(input.activity).factor);
+  const formulaTdee = Math.round(bmrRaw * activityOf(input.activity).factor);
+  const tdeeIsAdaptive = input.adaptiveTdee != null;
+  const tdee = input.adaptiveTdee ?? formulaTdee;
   const pace = paceOf(input.pace);
   const requestedDeficit = Math.round(dailyDeficit(pace.kgPerWeek));
   const minimum = MIN_TARGET_KCAL[input.sex];
@@ -214,6 +225,8 @@ export function calculateTarget(input: TargetInput): TargetResult {
     age,
     bmr,
     tdee,
+    formulaTdee,
+    tdeeIsAdaptive,
     requestedDeficit,
     recommended,
     target,

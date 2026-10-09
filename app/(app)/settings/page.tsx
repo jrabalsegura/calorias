@@ -37,6 +37,7 @@ export default async function SettingsPage() {
         {goal ? (
           <>
             <TargetBreakdown
+              adaptiveSince={goal.profile.adaptiveSince}
               pace={goal.profile.pace}
               result={goal.target}
               today={today}

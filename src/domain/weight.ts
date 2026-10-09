@@ -42,6 +42,16 @@ export function weightTrend(weighIns: readonly WeighIn[]): TrendPoint[] {
   return points;
 }
 
+/** Trend on a day: the one of the last weigh-in up to it, or null before the first. */
+export function trendOn(points: readonly TrendPoint[], day: string): number | null {
+  let trend: number | null = null;
+  for (const point of points) {
+    if (point.day > day) break;
+    trend = point.trend;
+  }
+  return trend;
+}
+
 const roundTo1 = (value: number) => Math.round(value * 10) / 10;
 const roundTo2 = (value: number) => Math.round(value * 100) / 100;
 

@@ -9,11 +9,14 @@ export const DISCLAIMER =
 export function TargetBreakdown({
   result,
   pace,
-  today
+  today,
+  adaptiveSince = null
 }: {
   result: TargetResult;
   pace: Pace;
   today: string;
+  /** Monday of the check-in the adaptive expenditure comes from. */
+  adaptiveSince?: string | null;
 }) {
   const paceLabel = PACES.find(({ id }) => id === pace)?.label ?? "";
 
@@ -31,10 +34,24 @@ export function TargetBreakdown({
 
       <dl className="grid gap-1 text-sm">
         <Row label="Metabolismo basal" value={`${formatKcal(result.bmr)} kcal`} />
-        <Row
-          label="Gasto diario con tu actividad"
-          value={`${formatKcal(result.tdee)} kcal`}
-        />
+        {result.tdeeIsAdaptive ? (
+          <>
+            <Row
+              label="Gasto real estimado"
+              value={`${formatKcal(result.tdee)} kcal`}
+            />
+            <Row
+              label="Gasto según la fórmula"
+              muted
+              value={`${formatKcal(result.formulaTdee)} kcal`}
+            />
+          </>
+        ) : (
+          <Row
+            label="Gasto diario con tu actividad"
+            value={`${formatKcal(result.tdee)} kcal`}
+          />
+        )}
         <Row
           label={`Déficit del ritmo ${paceLabel.toLowerCase()}`}
           value={`−${formatKcal(result.requestedDeficit)} kcal`}
@@ -72,16 +89,38 @@ export function TargetBreakdown({
         </ul>
       ) : null}
 
+      {result.tdeeIsAdaptive ? (
+        <p className="text-xs leading-5 text-muted">
+          El gasto real sale de lo que comes y de cómo baja tu peso
+          {adaptiveSince
+            ? ` (check-in del ${formatLongDay(adaptiveSince, today).replace(/^\S+, /, "")})`
+            : ""}
+          ; la actividad solo cuenta para la fórmula.
+        </p>
+      ) : null}
+
       <p className="text-xs leading-5 text-muted">{DISCLAIMER}</p>
     </div>
   );
 }
 
-function Row({ label, value }: { label: string; value: string }) {
+function Row({
+  label,
+  value,
+  muted = false
+}: {
+  label: string;
+  value: string;
+  muted?: boolean;
+}) {
   return (
     <div className="flex items-baseline justify-between gap-3">
       <dt className="text-muted">{label}</dt>
-      <dd className="text-right font-medium tabular-nums text-ink">{value}</dd>
+      <dd
+        className={`text-right tabular-nums ${muted ? "text-muted" : "font-medium text-ink"}`}
+      >
+        {value}
+      </dd>
     </div>
   );
 }
