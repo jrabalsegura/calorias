@@ -171,6 +171,19 @@ make deploy          # pide la contraseña de sudo del servidor
 3. mueve `current` a `rollback` y la imagen nueva a `current`;
 4. reinstala el Quadlet, reinicia y pasa el smoke test local y público.
 
+### Mantenimiento
+
+- El CI de GitHub (`.github/workflows/ci.yml`) pasa `make check` y construye
+  la imagen con el smoke test en cada PR y en `main`.
+- Dependabot (`.github/dependabot.yml`) abre PRs agrupados de npm, la imagen
+  base de node y las GitHub Actions: los de seguridad al momento y los de
+  versiones menores y parches el día 1 de cada mes. Las versiones mayores se
+  hacen a mano.
+- Una vez al mes: fusiona los PRs de Dependabot con el CI en verde y haz
+  `make deploy`, aunque no haya cambios propios, para que la imagen recoja los
+  parches de la base. Un aviso de seguridad de algo accesible sin login
+  (Next.js, `proxy.ts`, login, health, la imagen base) se despliega el mismo día.
+
 ## 4. Rollback y restauración
 
 Si la versión no añadió una migración incompatible, basta con la imagen previa:
