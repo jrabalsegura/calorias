@@ -24,7 +24,7 @@ bajar y, con unas semanas de datos, se reajusta a tu gasto real.
 | 8 | Foto de la etiqueta (IA) | Hecha |
 | 9 | Resumen semanal y objetivo adaptativo | Hecha (falta comprobar con datos reales) |
 | 10 | Calidad de vida | Pendiente |
-| M1 | Mantenimiento: Node 24 | Pendiente (antes de abril de 2027) |
+| M1 | Mantenimiento: Node 24 | En curso (falta CI y despliegue) |
 | M2 | Mantenimiento: Tailwind 4 | Pendiente |
 
 Hitos:
@@ -882,9 +882,9 @@ versión que ya usan meteocentro y la web de Julio.
 ### Criterios de aceptación
 
 - [ ] `make check` en verde con Node 24 y el CI de GitHub en verde.
-- [ ] `make container-up && make container-check` correctos; `node -v` dentro
+- [x] `make container-up && make container-check` correctos; `node -v` dentro
       del contenedor muestra v24.
-- [ ] `scripts/create-user.ts` y `scripts/check-in-report.ts` funcionan con
+- [x] `scripts/create-user.ts` y `scripts/check-in-report.ts` funcionan con
       Node 24.
 - [ ] Desplegada con `make deploy` y smoke test público correcto.
 

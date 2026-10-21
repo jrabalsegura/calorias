@@ -7,7 +7,7 @@ El plan y el estado de cada fase están en [docs/ROADMAP.md](docs/ROADMAP.md).
 
 ## Requisitos
 
-- Node.js 22.13 o superior (el contenedor usa 22.23.2).
+- Node.js 24 o superior (el contenedor usa 24.22.0).
 - Docker Desktop para probar la imagen de producción en local.
 
 ## Puesta en marcha
