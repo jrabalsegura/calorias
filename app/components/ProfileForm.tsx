@@ -313,7 +313,7 @@ export function ProfileForm({
             Atrás
           </button>
         ) : null}
-        <button className="primary-button flex-[2]" disabled={isSaving} type="submit">
+        <button className="primary-button flex-2" disabled={isSaving} type="submit">
           {isSaving
             ? "Guardando..."
             : !isLastStep

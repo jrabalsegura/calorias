@@ -324,14 +324,14 @@ function ReviewLine({
           ) : null}
           <p className="flex flex-wrap gap-1 text-xs font-medium">
             {line.foodId && !line.savedAsFood ? (
-              <span className="rounded bg-accent/10 px-1.5 py-0.5 text-accent">De tus alimentos</span>
+              <span className="rounded-sm bg-accent/10 px-1.5 py-0.5 text-accent">De tus alimentos</span>
             ) : (
-              <span className={`rounded px-1.5 py-0.5 ${CONFIDENCE_STYLES[line.confidence]}`}>
+              <span className={`rounded-sm px-1.5 py-0.5 ${CONFIDENCE_STYLES[line.confidence]}`}>
                 {confidence.label}
               </span>
             )}
             {line.cookingOil ? (
-              <span className="rounded bg-amber-50 px-1.5 py-0.5 text-amber-900">
+              <span className="rounded-sm bg-amber-50 px-1.5 py-0.5 text-amber-900">
                 Aceite de cocinado
               </span>
             ) : null}

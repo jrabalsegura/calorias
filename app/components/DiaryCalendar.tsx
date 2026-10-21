@@ -118,7 +118,7 @@ export function DiaryCalendar({
           : (["within", "over", "wayOver", "incomplete"] as const)
         ).map((tone) => (
           <li className="flex items-center gap-1.5" key={tone}>
-            <span className={`inline-block h-3 w-3 rounded ${TONE_CLASS[tone]}`} />
+            <span className={`inline-block h-3 w-3 rounded-sm ${TONE_CLASS[tone]}`} />
             {tone === "over" ? "hasta +10 %" : TONE_LABEL[tone]}
           </li>
         ))}

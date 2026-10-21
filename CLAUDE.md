@@ -2,7 +2,8 @@
 
 App web personal (un único usuario) para contar calorías y bajar peso. PWA
 mobile-first. Next.js 16 (App Router, server actions) + React 19 + Prisma 6 +
-SQLite + Tailwind 3. Interfaz y mensajes en español; identificadores de código
+SQLite + Tailwind 4 (tema en `@theme` de `app/globals.css`, sin
+`tailwind.config`). Interfaz y mensajes en español; identificadores de código
 en inglés.
 
 El plan por fases está en `docs/ROADMAP.md`: implementa solo la fase pedida,

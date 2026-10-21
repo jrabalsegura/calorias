@@ -18,7 +18,7 @@ COPY app ./app
 COPY src ./src
 COPY public ./public
 COPY proxy.ts next-env.d.ts next.config.mjs ./
-COPY postcss.config.js tailwind.config.ts tsconfig.json ./
+COPY postcss.config.js tsconfig.json ./
 
 RUN DATABASE_URL=file:/tmp/build.db \
       AUTH_SECRET=container-build-placeholder-never-used-at-runtime \

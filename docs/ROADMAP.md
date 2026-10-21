@@ -25,7 +25,7 @@ bajar y, con unas semanas de datos, se reajusta a tu gasto real.
 | 9 | Resumen semanal y objetivo adaptativo | Hecha (falta comprobar con datos reales) |
 | 10 | Calidad de vida | Pendiente |
 | M1 | Mantenimiento: Node 24 | En curso (falta CI y despliegue) |
-| M2 | Mantenimiento: Tailwind 4 | Pendiente |
+| M2 | Mantenimiento: Tailwind 4 | En curso (falta CI y despliegue) |
 
 Hitos:
 
@@ -920,7 +920,7 @@ pero no se puede corregir en Tailwind 3).
 
 - [ ] `make check` en verde y CI en verde; `npm ls postcss-selector-parser`
       vacío.
-- [ ] Comparación visual en vista móvil (375 px), antes y después, de *Hoy*,
+- [x] Comparación visual en vista móvil (375 px), antes y después, de *Hoy*,
       *Añadir* (con el selector de cantidad), *Peso*, *Resumen*, *Ajustes*
       y el login: mismos colores, bordes, anillos de foco, alturas de 48 px
       y espaciados.

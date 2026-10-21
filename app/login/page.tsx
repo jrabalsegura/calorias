@@ -11,7 +11,7 @@ export default async function LoginPage({
 
   return (
     <main className="grid min-h-dvh place-items-center px-4 pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)]">
-      <section className="grid w-full max-w-sm gap-6 rounded-lg border border-line bg-white p-5 shadow-sm">
+      <section className="grid w-full max-w-sm gap-6 rounded-lg border border-line bg-white p-5 shadow-xs">
         <header className="grid gap-1">
           <p className="text-sm font-semibold uppercase tracking-wide text-accent">
             Calorías
