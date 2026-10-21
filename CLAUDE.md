@@ -23,6 +23,9 @@ make container-check # smoke test del contenedor
 make deploy          # despliega origin/main en el servidor (docs/DEPLOY.md)
 ```
 
+El CI de GitHub repite `make check` y el smoke test del contenedor; Dependabot
+abre los PRs de dependencias (docs/DEPLOY.md, "Mantenimiento").
+
 Un test concreto: `node --import tsx --test --test-name-pattern "session" tests/*.test.ts`.
 
 ## Arquitectura
