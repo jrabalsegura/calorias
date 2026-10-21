@@ -1,6 +1,53 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #172026;
+  --color-muted: #5f6b76;
+  --color-surface: #f7f7f4;
+  --color-line: #dedbd2;
+  --color-accent: #2f7d4f;
+
+  /* Tailwind 4 moved its palette to oklch; these are the Tailwind 3 values of
+     the default colors the app uses, so they look exactly the same. */
+  --color-amber-50: #fffbeb;
+  --color-amber-100: #fef3c7;
+  --color-amber-200: #fde68a;
+  --color-amber-500: #f59e0b;
+  --color-amber-900: #78350f;
+  --color-emerald-50: #ecfdf5;
+  --color-emerald-100: #d1fae5;
+  --color-emerald-800: #065f46;
+  --color-emerald-900: #064e3b;
+  --color-red-50: #fef2f2;
+  --color-red-100: #fee2e2;
+  --color-red-200: #fecaca;
+  --color-red-600: #dc2626;
+  --color-red-700: #b91c1c;
+  --color-red-800: #991b1b;
+  --color-sky-50: #f0f9ff;
+  --color-sky-800: #075985;
+}
+
+/* Tailwind 3 defaults that Tailwind 4 changed: keep them so nothing moves. */
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: #e5e7eb;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: #9ca3af;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}
 
 :root {
   color-scheme: light;
@@ -28,7 +75,7 @@ body {
 
   /* 16px text keeps iOS Safari from zooming in when the field is focused. */
   .field-input {
-    @apply h-12 w-full min-w-0 rounded-lg border border-line bg-white px-3 text-base text-ink outline-none focus:border-accent focus:ring-2 focus:ring-accent/20;
+    @apply h-12 w-full min-w-0 rounded-lg border border-line bg-white px-3 text-base text-ink outline-hidden focus:border-accent focus:ring-2 focus:ring-accent/20;
   }
 
   .primary-button {

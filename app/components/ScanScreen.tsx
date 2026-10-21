@@ -187,7 +187,7 @@ export function ScanScreen({
 
       {lookingUp ? (
         <p
-          className="grid aspect-[4/3] place-items-center rounded-lg border border-line bg-white px-4 text-center text-sm text-muted"
+          className="grid aspect-4/3 place-items-center rounded-lg border border-line bg-white px-4 text-center text-sm text-muted"
           role="status"
         >
           Buscando {lookingUp}...

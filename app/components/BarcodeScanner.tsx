@@ -182,7 +182,7 @@ export function BarcodeScanner({
   }
 
   return (
-    <div className="relative aspect-[4/3] overflow-hidden rounded-lg bg-ink">
+    <div className="relative aspect-4/3 overflow-hidden rounded-lg bg-ink">
       <video
         aria-label="Imagen de la cámara"
         className="h-full w-full object-cover"

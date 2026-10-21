@@ -247,7 +247,7 @@ export function WeightChart({
           Pesajes
         </span>
         <span className="flex items-center gap-1.5">
-          <span className="inline-block h-0.5 w-4 rounded bg-accent" />
+          <span className="inline-block h-0.5 w-4 rounded-sm bg-accent" />
           Tendencia
         </span>
       </p>

@@ -193,7 +193,7 @@ export function LabelScreen({
 
       {reading ? (
         <div
-          className="relative grid aspect-[4/3] place-items-center overflow-hidden rounded-lg border border-line bg-white"
+          className="relative grid aspect-4/3 place-items-center overflow-hidden rounded-lg border border-line bg-white"
           role="status"
         >
           {preview ? (
