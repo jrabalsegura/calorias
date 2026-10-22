@@ -23,7 +23,8 @@ bajar y, con unas semanas de datos, se reajusta a tu gasto real.
 | 7 | Descripción en texto (IA) | Hecha |
 | 8 | Foto de la etiqueta (IA) | Hecha |
 | 9 | Resumen semanal y objetivo adaptativo | Hecha (falta comprobar con datos reales) |
-| 10 | Calidad de vida | Pendiente |
+| 10a | Calidad de vida: comidas guardadas | Pendiente de desplegar |
+| 10 | Calidad de vida (resto de candidatos) | Pendiente |
 | M1 | Mantenimiento: Node 24 | Hecha |
 | M2 | Mantenimiento: Tailwind 4 | Hecha |
 
@@ -125,6 +126,7 @@ Cada tabla se crea en la fase que la necesita:
 | `Food` | Nombre, marca, código de barras (único, opcional), unidad base (`g`/`ml`), kcal por 100, macros opcionales sin interfaz, origen, favorito y último uso | 5 |
 | `FoodPortion` | Porciones con nombre (“1 rebanada = 30 g”) | 5 |
 | `WeeklyCheckIn` | Gasto estimado, objetivo anterior y propuesto, y si se aceptó | 9 |
+| `SavedMeal` / `SavedMealItem` | Comida guardada con nombre y copia de sus entradas | 10a |
 
 ---
 
@@ -843,7 +845,7 @@ se eligen al empezar la fase y, si son muchos, se divide en 10a y 10b.
 
 ### Candidatos
 
-- **Comidas guardadas**: “mi desayuno de siempre” con un toque.
+- ~~**Comidas guardadas**~~: “mi desayuno de siempre” con un toque (fase 10a).
 - **Recetas caseras**: ingredientes y peso final cocinado; luego registras los
   gramos que te sirves (lentejas, tortilla, cocido…).
 - **Recordatorios** con Web Push en la app instalada: pesarte por la mañana, o
@@ -853,6 +855,45 @@ se eligen al empezar la fase y, si son muchos, se divide en 10a y 10b.
 - **Pulido visual**: modo oscuro, accesibilidad e icono definitivo.
 - **Precisión y coste de la IA**: anclar las descripciones a una base de
   alimentos genéricos, y comparar Opus 5.5 con Sonnet 5.5.
+
+## Fase 10a — Comidas guardadas
+
+### Objetivo
+
+Guardar una comida completa del diario (la tostada, el café…) para añadirla
+entera otro día en 2-3 toques, sin buscar los productos uno a uno.
+
+### Alcance
+
+- En *Hoy*, cada comida con entradas tiene un botón (marcador) junto al «+»
+  que abre *Guardar comida*: nombre (por defecto el de la comida) y las
+  entradas, todas marcadas, para quitar alguna.
+- Se guarda una copia de nombre, cantidad, unidad, kcal, alimento y origen de
+  cada entrada (`SavedMeal` y `SavedMealItem`, migración `saved_meal`). Como
+  en *Repetir*, al usarla se copian las kcal guardadas, no se recalculan.
+- *Añadir* muestra «Comidas guardadas» (la última usada primero) antes de
+  los favoritos. Al tocar una se abre una hoja con sus entradas marcadas, la
+  comida de destino y *Añadir N · X kcal*; desde ahí también se borra.
+
+### Fuera de alcance
+
+- Editar una comida guardada (se borra y se vuelve a guardar) y buscarlas
+  desde el buscador.
+- Recetas caseras con peso cocinado (otro candidato de la fase 10).
+
+### Criterios de aceptación
+
+- [x] Guardar el almuerzo de un día quitando una entrada, y añadirlo a otro
+      día y comida con los mismos nombres, cantidades y kcal.
+- [x] Borrar una comida guardada desde *Añadir*.
+- [x] Tests del nombre, la copia de entradas y el resumen.
+- [ ] Desplegada con `make deploy`.
+
+Verificado en local (22-10-2026), `make check` en verde. En vista móvil
+(375 px) con una BD de prueba: almuerzo con tostada (210), café con leche
+(250 ml, 90) y una entrada rápida (35) → marcador → «Almuerzo de siempre»
+sin la entrada rápida → *Añadir* de mañana → «Comidas guardadas» → *Añadir 2
+· 300 kcal* → mañana con las dos entradas. Borrarla la quita de *Añadir*.
 
 ---
 
