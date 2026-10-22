@@ -5,6 +5,7 @@ import { isValidDay } from "@/domain/day";
 import { parseEntryInput } from "@/domain/diary";
 import { copyEntries, foodEntryName, parseQuantityInput } from "@/domain/food";
 import { isMeal } from "@/domain/meals";
+import { parseSavedMealName, savedMealItems } from "@/domain/savedMeals";
 import { isDayMark, type DayMark } from "@/domain/summary";
 import { requireCurrentUser } from "@/lib/auth";
 import { toLibraryFood, foodSelect } from "@/lib/foods";
@@ -138,6 +139,17 @@ export async function saveFoodEntry(values: {
   return null;
 }
 
+// What copying an entry (or a saved meal item) takes.
+const copyableSelect = {
+  name: true,
+  quantity: true,
+  unit: true,
+  kcal: true,
+  foodId: true,
+  source: true,
+  note: true
+} as const;
+
 /** Copies entries of another day into `day` and `meal`, with their saved values. */
 export async function copyDiaryEntries(values: {
   ids: string[];
@@ -153,15 +165,7 @@ export async function copyDiaryEntries(values: {
   const originals = await prisma.diaryEntry.findMany({
     where: { id: { in: values.ids } },
     orderBy: { createdAt: "asc" },
-    select: {
-      name: true,
-      quantity: true,
-      unit: true,
-      kcal: true,
-      foodId: true,
-      source: true,
-      note: true
-    }
+    select: copyableSelect
   });
   if (originals.length === 0) return { error: "Esas entradas ya no existen." };
 
@@ -171,6 +175,68 @@ export async function copyDiaryEntries(values: {
 
   revalidatePath("/", "layout");
   return null;
+}
+
+/** Saves entries of the diary (usually a whole meal) to log them together again. */
+export async function saveMeal(values: {
+  entryIds: string[];
+  name: string;
+}): Promise<{ error: string } | null> {
+  await requireCurrentUser();
+
+  const name = parseSavedMealName(values.name);
+  if (!name.ok) return { error: name.error };
+  if (values.entryIds.length === 0) return { error: "Elige qué quieres guardar." };
+
+  const entries = await prisma.diaryEntry.findMany({
+    where: { id: { in: values.entryIds } },
+    orderBy: { createdAt: "asc" },
+    select: copyableSelect
+  });
+  if (entries.length === 0) return { error: "Esas entradas ya no existen. Recarga la página." };
+
+  await prisma.savedMeal.create({
+    data: { name: name.value, items: { create: savedMealItems(entries) } }
+  });
+
+  revalidatePath("/add");
+  return null;
+}
+
+/** Adds items of a saved meal to `day` and `meal`, with their saved values. */
+export async function addSavedMeal(values: {
+  id: string;
+  itemIds: string[];
+  day: string;
+  meal: string;
+}): Promise<{ error: string } | null> {
+  await requireCurrentUser();
+
+  if (!isValidDay(values.day)) return { error: "Fecha no válida." };
+  if (!isMeal(values.meal)) return { error: "Elige una comida." };
+  if (values.itemIds.length === 0) return { error: "Elige qué quieres añadir." };
+
+  const items = await prisma.savedMealItem.findMany({
+    where: { savedMealId: values.id, id: { in: values.itemIds } },
+    orderBy: { position: "asc" },
+    select: copyableSelect
+  });
+  if (items.length === 0) return { error: "Esta comida guardada ya no existe. Recarga la página." };
+
+  await prisma.$transaction([
+    prisma.diaryEntry.createMany({ data: copyEntries(items, values.day, values.meal) }),
+    prisma.savedMeal.update({ where: { id: values.id }, data: { lastUsedAt: new Date() } })
+  ]);
+
+  revalidatePath("/", "layout");
+  return null;
+}
+
+export async function deleteSavedMeal(id: string): Promise<void> {
+  await requireCurrentUser();
+
+  await prisma.savedMeal.deleteMany({ where: { id } });
+  revalidatePath("/add");
 }
 
 /**

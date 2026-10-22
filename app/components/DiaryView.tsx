@@ -11,8 +11,9 @@ import type { LibraryFood } from "@/lib/foods";
 import { DayGoal } from "./DayGoal";
 import { EntrySheet, type SheetTarget } from "./EntrySheet";
 import { FoodEntrySheet, type FoodSheetTarget } from "./FoodEntrySheet";
-import { PlusIcon } from "./icons";
+import { BookmarkIcon, PlusIcon } from "./icons";
 import { addHref } from "./links";
+import { SaveMealSheet, type SaveMealTarget } from "./SaveMealSheet";
 
 export type DiaryViewEntry = {
   id: string;
@@ -40,6 +41,7 @@ export function DiaryView({
   const router = useRouter();
   const [target, setTarget] = useState<SheetTarget | null>(null);
   const [foodTarget, setFoodTarget] = useState<FoodSheetTarget | null>(null);
+  const [saveTarget, setSaveTarget] = useState<SaveMealTarget | null>(null);
   // Remounts the sheets on every open so they never show stale values.
   const [openCount, setOpenCount] = useState(0);
 
@@ -75,6 +77,19 @@ export function DiaryView({
               <span className="text-sm font-medium tabular-nums text-muted">
                 {formatKcal(totals.byMeal[meal])} kcal
               </span>
+              {mealEntries.length > 0 ? (
+                <button
+                  aria-label={`Guardar ${label.toLowerCase()} para otro día`}
+                  className="-mr-2 grid h-12 w-12 place-items-center text-muted active:bg-line/50"
+                  onClick={() => {
+                    setSaveTarget({ label, entries: mealEntries });
+                    setOpenCount((count) => count + 1);
+                  }}
+                  type="button"
+                >
+                  <BookmarkIcon className="h-5 w-5" />
+                </button>
+              ) : null}
               <Link
                 aria-label={`Añadir a ${label.toLowerCase()}`}
                 className="grid h-12 w-12 place-items-center text-accent active:bg-line/50"
@@ -139,6 +154,11 @@ export function DiaryView({
         key={`food-${openCount}`}
         onClose={() => setFoodTarget(null)}
         target={foodTarget}
+      />
+      <SaveMealSheet
+        key={`save-${openCount}`}
+        onClose={() => setSaveTarget(null)}
+        target={saveTarget}
       />
     </>
   );

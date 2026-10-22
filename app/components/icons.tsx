@@ -128,3 +128,11 @@ export function CameraIcon() {
     </Icon>
   );
 }
+
+export function BookmarkIcon({ className }: { className?: string }) {
+  return (
+    <Icon className={className}>
+      <path d="M7 4h10a1 1 0 0 1 1 1v15l-6-4-6 4V5a1 1 0 0 1 1-1z" />
+    </Icon>
+  );
+}

@@ -80,6 +80,7 @@ model Food {
   lastUsedAt    DateTime?
   portions      FoodPortion[]
   entries       DiaryEntry[]
+  savedItems    SavedMealItem[]
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
 }
@@ -137,4 +138,34 @@ model WeeklyCheckIn {
   proposedTarget Int
   accepted       Boolean
   createdAt      DateTime @default(now())
+}
+
+// A group of entries logged often together ("mi desayuno de siempre"), saved
+// from a meal of the diary. Items are copies of the entries, like the diary:
+// adding the meal again gives the same names and kcal.
+model SavedMeal {
+  id         String          @id @default(cuid())
+  name       String
+  lastUsedAt DateTime?
+  items      SavedMealItem[]
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+}
+
+model SavedMealItem {
+  id          String    @id @default(cuid())
+  savedMealId String
+  savedMeal   SavedMeal @relation(fields: [savedMealId], references: [id], onDelete: Cascade)
+  position    Int       @default(0)
+  name        String?
+  quantity    Float?
+  unit        String?
+  kcal        Int
+  foodId      String?
+  food        Food?     @relation(fields: [foodId], references: [id], onDelete: SetNull)
+  source      String    @default("manual")
+  note        String?
+
+  @@index([savedMealId])
+  @@index([foodId])
 }

@@ -13,12 +13,15 @@ import {
   searchFoods
 } from "@/domain/food";
 import { mealLabel, type Meal } from "@/domain/meals";
+import { savedMealSummary } from "@/domain/savedMeals";
 import type { LibraryFood } from "@/lib/foods";
+import type { SavedMealView } from "@/lib/savedMeals";
 import { EntrySheet, type SheetTarget } from "./EntrySheet";
 import { FoodEntrySheet, type FoodSheetTarget } from "./FoodEntrySheet";
 import {
   BarcodeIcon,
   BoltIcon,
+  BookmarkIcon,
   CameraIcon,
   CloseIcon,
   PlusIcon,
@@ -29,6 +32,7 @@ import {
 } from "./icons";
 import { addHref, diaryHref, labelHref, scanHref, textHref } from "./links";
 import { PageHeader } from "./PageHeader";
+import { SavedMealSheet, type SavedMealTarget } from "./SavedMealSheet";
 
 const SEARCH_LIMIT = 40;
 
@@ -38,6 +42,7 @@ export function AddScreen({
   meal,
   foods,
   recentIds,
+  savedMeals,
   initialFoodId
 }: {
   day: string;
@@ -45,6 +50,7 @@ export function AddScreen({
   meal: Meal;
   foods: LibraryFood[];
   recentIds: string[];
+  savedMeals: SavedMealView[];
   /** A food to open straight away (just created from this screen). */
   initialFoodId: string | null;
 }) {
@@ -55,6 +61,7 @@ export function AddScreen({
     return food ? { kind: "new", food, meal } : null;
   });
   const [quickTarget, setQuickTarget] = useState<SheetTarget | null>(null);
+  const [savedTarget, setSavedTarget] = useState<SavedMealTarget | null>(null);
   // Remounts the sheets on every open so they never show stale values.
   const [openCount, setOpenCount] = useState(0);
 
@@ -172,6 +179,15 @@ export function AddScreen({
             <ShortcutButton href={newFoodHref()} icon={<PlusIcon />} label="Nuevo alimento" />
           </div>
 
+          {savedMeals.length > 0 ? (
+            <SavedMealList
+              onPick={(savedMeal) => {
+                setSavedTarget({ savedMeal, meal });
+                setOpenCount((count) => count + 1);
+              }}
+              savedMeals={savedMeals}
+            />
+          ) : null}
           {favorites.length > 0 ? (
             <FoodList foods={favorites} label="Favoritos" onPick={pick} />
           ) : null}
@@ -212,6 +228,13 @@ export function AddScreen({
         onClose={() => setQuickTarget(null)}
         onSaved={goBack}
         target={quickTarget}
+      />
+      <SavedMealSheet
+        day={day}
+        key={`saved-${openCount}`}
+        onClose={() => setSavedTarget(null)}
+        onSaved={goBack}
+        target={savedTarget}
       />
     </>
   );
@@ -293,6 +316,47 @@ function FoodList({
             </li>
           );
         })}
+      </ul>
+    </section>
+  );
+}
+
+function SavedMealList({
+  savedMeals,
+  onPick
+}: {
+  savedMeals: SavedMealView[];
+  onPick: (savedMeal: SavedMealView) => void;
+}) {
+  return (
+    <section
+      aria-label="Comidas guardadas"
+      className="overflow-hidden rounded-lg border border-line bg-white"
+    >
+      <h2 className="px-4 pb-2 pt-3 text-sm font-semibold text-muted">Comidas guardadas</h2>
+      <ul className="border-t border-line">
+        {savedMeals.map((savedMeal) => (
+          <li className="border-b border-line last:border-b-0" key={savedMeal.id}>
+            <button
+              className="flex min-h-14 w-full items-center gap-3 px-4 py-2 text-left active:bg-line/40"
+              onClick={() => onPick(savedMeal)}
+              type="button"
+            >
+              <span className="shrink-0 text-accent">
+                <BookmarkIcon className="h-5 w-5" />
+              </span>
+              <span className="grid min-w-0 flex-1">
+                <span className="truncate text-ink">{savedMeal.name}</span>
+                <span className="truncate text-sm text-muted">
+                  {savedMealSummary(savedMeal.items)}
+                </span>
+              </span>
+              <span className="tabular-nums text-ink">
+                {formatKcal(savedMeal.items.reduce((sum, { kcal }) => sum + kcal, 0))}
+              </span>
+            </button>
+          </li>
+        ))}
       </ul>
     </section>
   );

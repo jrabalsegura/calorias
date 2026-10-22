@@ -72,6 +72,10 @@ Un test concreto: `node --import tsx --test --test-name-pattern "session" tests/
   `WeeklyCheckIn` aceptado sustituye a la fórmula del gasto
   (`adaptiveTdee` en `calculateTarget`). `scripts/check-in-report.ts` repite
   los check-ins sobre una BD (solo lectura).
+- Comidas guardadas: `SavedMeal` + `SavedMealItem` (copias de entradas,
+  como *Repetir*); validación en `src/domain/savedMeals.ts`, carga en
+  `src/lib/savedMeals.ts`. Se guardan con el marcador de cada comida en *Hoy*
+  (`SaveMealSheet`) y se añaden desde *Añadir* (`SavedMealSheet`).
 - `proxy.ts` (el antiguo middleware; runtime Node): valida la cookie firmada y `sessionVersion`
   contra la BD en cada petición y la renueva (sesión deslizante de 180 días).
   Las rutas públicas (login, health, manifest, iconos, `sw.js`) están en
