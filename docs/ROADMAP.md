@@ -23,7 +23,7 @@ bajar y, con unas semanas de datos, se reajusta a tu gasto real.
 | 7 | Descripción en texto (IA) | Hecha |
 | 8 | Foto de la etiqueta (IA) | Hecha |
 | 9 | Resumen semanal y objetivo adaptativo | Hecha (falta comprobar con datos reales) |
-| 10a | Calidad de vida: comidas guardadas | Pendiente de desplegar |
+| 10a | Calidad de vida: comidas guardadas | Hecha |
 | 10 | Calidad de vida (resto de candidatos) | Pendiente |
 | M1 | Mantenimiento: Node 24 | Hecha |
 | M2 | Mantenimiento: Tailwind 4 | Hecha |
@@ -887,13 +887,17 @@ entera otro día en 2-3 toques, sin buscar los productos uno a uno.
       día y comida con los mismos nombres, cantidades y kcal.
 - [x] Borrar una comida guardada desde *Añadir*.
 - [x] Tests del nombre, la copia de entradas y el resumen.
-- [ ] Desplegada con `make deploy`.
+- [x] Desplegada con `make deploy`.
 
 Verificado en local (22-10-2026), `make check` en verde. En vista móvil
 (375 px) con una BD de prueba: almuerzo con tostada (210), café con leche
 (250 ml, 90) y una entrada rápida (35) → marcador → «Almuerzo de siempre»
 sin la entrada rápida → *Añadir* de mañana → «Comidas guardadas» → *Añadir 2
 · 300 kcal* → mañana con las dos entradas. Borrarla la quita de *Añadir*.
+
+Desplegada en `remote` el 22-10-2026 (`c1ca517`, migración `saved_meal`
+aplicada al arrancar, copia previa de SQLite y smoke test local y por HTTPS
+correctos).
 
 ---
 
