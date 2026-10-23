@@ -24,7 +24,7 @@ bajar y, con unas semanas de datos, se reajusta a tu gasto real.
 | 8 | Foto de la etiqueta (IA) | Hecha |
 | 9 | Resumen semanal y objetivo adaptativo | Hecha (falta comprobar con datos reales) |
 | 10a | Calidad de vida: comidas guardadas | Hecha |
-| 10b | Foto del plato (IA) | Verificada en local (falta desplegar) |
+| 10b | Foto del plato (IA) | Hecha |
 | 10 | Calidad de vida (resto de candidatos) | Pendiente |
 | M1 | Mantenimiento: Node 24 | Hecha |
 | M2 | Mantenimiento: Tailwind 4 | Hecha |
@@ -953,7 +953,7 @@ restaurante, algo que no sabes describir bien), no para el día a día.
       foto sola se equivoca.
 - [x] Tests del prompt, del procesado de respuestas guardadas y del aviso
       sin comida.
-- [ ] Desplegada con `make deploy`.
+- [x] Desplegada con `make deploy`.
 
 Verificado en local (23-10-2026) con `claude-sonnet-5-5` y esfuerzo `low`:
 `make check` en verde. `scripts/eval-photo.ts` pasa 10 fotos de Wikimedia
@@ -1006,6 +1006,9 @@ Decisiones:
   315 → 285). `scripts/eval-text.ts` pasa de nuevo las 19 descripciones: los
   fritos van sin línea de aceite, la plancha y los revueltos la conservan y
   la ensalada mantiene su aliño aparte; el resto, igual que antes.
+
+Desplegada en `remote` el 23-10-2026 (`3adf4a8`, sin migraciones nuevas,
+copia previa de SQLite y smoke test local y por HTTPS correctos).
 
 ---
 
