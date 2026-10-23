@@ -23,6 +23,7 @@ import {
   BoltIcon,
   BookmarkIcon,
   CameraIcon,
+  PlateIcon,
   CloseIcon,
   PlusIcon,
   RepeatIcon,
@@ -30,7 +31,7 @@ import {
   StarIcon,
   TextIcon
 } from "./icons";
-import { addHref, diaryHref, labelHref, scanHref, textHref } from "./links";
+import { addHref, diaryHref, labelHref, photoHref, scanHref, textHref } from "./links";
 import { PageHeader } from "./PageHeader";
 import { SavedMealSheet, type SavedMealTarget } from "./SavedMealSheet";
 
@@ -161,6 +162,12 @@ export function AddScreen({
               <CameraIcon />
             </span>
             Foto de la etiqueta
+          </Link>
+          <Link className="secondary-button w-full gap-2" href={photoHref(day, meal)}>
+            <span className="text-accent">
+              <PlateIcon />
+            </span>
+            Foto del plato
           </Link>
           <div className="grid grid-cols-3 gap-2">
             <ShortcutButton

@@ -1,0 +1,11 @@
+{
+  "file": "Camera zoom burst on a Microsoft computer keyboard in Tuntorp 8.jpg",
+  "photo": "https://commons.wikimedia.org/wiki/File:Camera_zoom_burst_on_a_Microsoft_computer_keyboard_in_Tuntorp_8.jpg",
+  "note": "",
+  "answer": {
+    "items": []
+  },
+  "expected": {
+    "error": true
+  }
+}

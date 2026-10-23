@@ -1,0 +1,32 @@
+{
+  "file": "Pincho de tortilla - Madrid.jpg",
+  "photo": "https://commons.wikimedia.org/wiki/File:Pincho_de_tortilla_-_Madrid.jpg",
+  "note": "",
+  "answer": {
+    "items": [
+      {
+        "name": "Tortilla de patatas",
+        "amount": 170,
+        "unit": "g",
+        "kcalPer100": 190,
+        "libraryRef": null,
+        "assumption": "porción triangular gruesa en plato de postre de unos 20 cm ≈ 170 g",
+        "confidence": "medium",
+        "cookingOil": false
+      },
+      {
+        "name": "Pan blanco (barra)",
+        "amount": 70,
+        "unit": "g",
+        "kcalPer100": 265,
+        "libraryRef": null,
+        "assumption": "trozo de barra de unos 15 cm junto a la tortilla ≈ 70 g",
+        "confidence": "medium",
+        "cookingOil": false
+      }
+    ]
+  },
+  "expected": {
+    "kcal": 509
+  }
+}

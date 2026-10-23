@@ -66,6 +66,13 @@ Un test concreto: `node --import tsx --test --test-name-pattern "session" tests/
   la llamada en `src/lib/labelReading.ts`; la foto se reduce en el móvil
   (`LabelScreen`). `scripts/eval-label.ts` lee fotos de etiquetas de OFF con
   la API real.
+- Foto del plato (`/add/photo`): prompt y nota en `src/domain/mealPhoto.ts`;
+  la respuesta usa el esquema y la validación de `textEstimate.ts`, la
+  llamada está en `src/lib/mealPhoto.ts` y la revisión es `EstimateReview`,
+  común con *Describir*. La captura (`PhotoButtons`) y la validación de la
+  foto (`src/domain/photo.ts`) se comparten con *Etiqueta*.
+  `scripts/eval-photo.ts` pasa fotos de platos de Wikimedia Commons por la
+  API real.
 - Resumen (`/summary`): días completos/incompletos, medias, semanas y
   calendario en `src/domain/summary.ts`; gasto real y check-in semanal en
   `src/domain/adaptive.ts`, con la carga en `src/lib/summary.ts`. El último

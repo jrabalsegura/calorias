@@ -24,6 +24,7 @@ bajar y, con unas semanas de datos, se reajusta a tu gasto real.
 | 8 | Foto de la etiqueta (IA) | Hecha |
 | 9 | Resumen semanal y objetivo adaptativo | Hecha (falta comprobar con datos reales) |
 | 10a | Calidad de vida: comidas guardadas | Hecha |
+| 10b | Foto del plato (IA) | Verificada en local (falta desplegar) |
 | 10 | Calidad de vida (resto de candidatos) | Pendiente |
 | M1 | Mantenimiento: Node 24 | Hecha |
 | M2 | Mantenimiento: Tailwind 4 | Hecha |
@@ -106,6 +107,7 @@ de salida (Opus 5.5, el doble).
 |---|---|
 | Desglosar una descripción (medido en la fase 7: ~1.700 tokens de entrada y 100-300 de salida) | ~0,5 céntimos de dólar |
 | Leer una etiqueta (medido en la fase 8: foto de 1.500 px, ~3.000-3.700 tokens de entrada y ~100 de salida) | ~0,8 céntimos de dólar |
+| Estimar un plato por foto (medido en la fase 10b: foto de 1.500 px y la biblioteca, ~3.900 tokens de entrada y 100-300 de salida) | ~0,9-1 céntimo de dólar |
 | Uso diario personal (unas 3 descripciones al día y alguna etiqueta) | **menos de 1 $ al mes** |
 
 Cada etiqueta se lee una sola vez, porque el producto queda guardado. Se puede
@@ -665,7 +667,7 @@ nutricional, reutilizando la integración con la IA de la fase 7.
 
 ### Fuera de alcance
 
-- Foto del plato de comida (descartada por ahora).
+- Foto del plato de comida (se hizo después, en la fase 10b).
 
 ### Criterios de aceptación
 
@@ -901,6 +903,106 @@ correctos).
 
 ---
 
+## Fase 10b — Foto del plato (IA)
+
+### Objetivo
+
+Como último recurso al añadir, hacer una foto de lo que vas a comer y que la
+IA reconozca los alimentos y estime cantidades y calorías, para revisarlas
+igual que una descripción en texto. Es para el uso ocasional (un plato en un
+restaurante, algo que no sabes describir bien), no para el día a día.
+
+### Alcance
+
+- *Añadir* muestra *Foto del plato* como última opción, tras *Foto de la
+  etiqueta* (`/add/photo?day=&meal=`).
+- La captura es la de la fase 8: *Hacer la foto* y *Elegir de la galería*,
+  reducida en el móvil a 1.500 px y sin guardarla. Se extrae a un componente
+  común con *Foto de la etiqueta*.
+- Campo opcional de texto para ayudar a la IA: «media ración», «es tortilla
+  de patatas», «sin la salsa», «con mi pan de molde».
+- La IA devuelve las mismas líneas que en la fase 7 (descripción, gramos
+  estimados, kcal por 100, supuestos y confianza), con la biblioteca en la
+  petición y las kcal calculadas en el servidor. Reglas propias del prompt:
+  - Estimar la cantidad por lo que se ve (tamaño del plato, cubiertos, pan,
+    vaso) y decir en los supuestos en qué se basa.
+  - Aceite y salsas visibles en líneas aparte.
+  - Si el texto indica algo, manda sobre la foto.
+- La revisión es la de *Describir* (gramos editables, pequeño/normal/grande,
+  quitar y añadir líneas, «¿Algo más?», guardar como alimento) con un aviso
+  fijo de que es una estimación aproximada. Las entradas se guardan con
+  origen `photo` y la llamada queda en `AiCall` con `kind: photo`.
+- Una foto sin comida, o que no se distingue, da aviso con *Describirlo con
+  texto* y *Apuntarlo a mano*.
+
+### Fuera de alcance
+
+- Guardar la foto en el diario, varias fotos de un mismo plato o una foto
+  del «después» para descontar lo que sobra.
+- Medir el volumen con un objeto de referencia o con la profundidad de la
+  cámara.
+
+### Criterios de aceptación
+
+- [x] `scripts/eval-photo.ts` pasa con la API real 8-10 fotos de platos
+      (libres de derechos, en memoria) con y sin texto de ayuda: alimentos
+      bien reconocidos y cantidades razonables, revisadas a mano. Incluye un
+      plato de cuchara, un plato combinado, un bocadillo, algo con salsa y
+      una foto sin comida.
+- [x] El texto de ayuda corrige el reconocimiento o la cantidad cuando la
+      foto sola se equivoca.
+- [x] Tests del prompt, del procesado de respuestas guardadas y del aviso
+      sin comida.
+- [ ] Desplegada con `make deploy`.
+
+Verificado en local (23-10-2026) con `claude-sonnet-5-5` y esfuerzo `low`:
+`make check` en verde. `scripts/eval-photo.ts` pasa 10 fotos de Wikimedia
+Commons (lentejas, plato combinado, bocadillo de calamares, macarrones,
+paella, pincho de tortilla con pan, ensalada mixta, bravas, café con
+cruasán y un teclado), tres de ellas también con nota. Revisadas a mano,
+todas razonables: reconoce bien los platos e ignora lo que hay en la mesa
+fuera del plato (churros y cafés junto a la tortilla), las cantidades se
+apoyan en lo que se ve («plato de postre de unos 20 cm ≈ 170 g»), y el
+teclado da el aviso sin comida. La nota manda: «solo me como la mitad»
+divide el bocadillo (649 → 397 kcal), «son unos 200 g de arroz» fija el
+arroz y «sin la salsa» quita la salsa brava. Tras la primera pasada se
+cambió la regla del aceite: los fritos (tortilla, patatas fritas,
+rebozados) llevaban sus kcal de frito **y** una línea de aceite, que
+contaba el aceite dos veces; ahora el aceite aparte es solo para la
+plancha, los salteados y los guisos. Las respuestas están en
+`tests/fixtures/photo/`. Respuestas en 2-6 s, unos 3.900 tokens de entrada
+y 0,9 céntimos por foto. En vista móvil (375 px) con una BD de prueba, con
+la foto original de 2.592 × 3.888 px puesta en el campo de la galería (el
+navegador de pruebas no tiene cámara): nota «el pan no» → *Elegir de la
+galería* → «Mirando el plato...» → solo la tortilla (170 g, 323 kcal) →
+*Grande* (213 g) → «¿Algo más?» con una caña → *Añadir al diario* → *Hoy*
+con las dos entradas (origen `photo`, `AiCall` con `kind: photo`). La foto
+del teclado da el aviso con *Describirlo con texto* y *Apuntarlo a mano*.
+*Describir* y *Foto de la etiqueta* siguen igual tras sacar sus partes
+comunes. **Pendiente: la prueba en el móvil real con la cámara**, que se
+hará al final.
+
+Decisiones:
+
+- *Foto del plato* (`/add/photo?day=&meal=`) es la última opción de
+  *Añadir* y vuelve a *Añadir*; tras añadir va a *Hoy*. La nota se escribe
+  antes de la foto, porque la foto se envía en cuanto se elige.
+- La captura y la reducción son `PhotoButtons` (compartido con *Foto de la
+  etiqueta*), y la validación de la foto y su tamaño, `src/domain/photo.ts`
+  (antes en `label.ts`).
+- El prompt (`src/domain/mealPhoto.ts`) es propio, pero la respuesta usa el
+  esquema y la validación de *Describir* (`ESTIMATE_SCHEMA`,
+  `parseEstimate`) con su propio aviso cuando no hay comida. La biblioteca
+  va en la petición: se usa si la nota la nombra o si se ve el envase.
+- La revisión es `EstimateReview`, sacada de *Describir*: las dos guardan
+  con `saveTextEntries` y `saveTextLineAsFood`, que reciben el origen
+  (`text` o `photo`) para las entradas y para los alimentos guardados.
+  «¿Algo más?» desde una foto añade líneas con texto, que se guardan
+  también con origen `photo`.
+- Sin migraciones: `source` y `kind` ya eran texto libre.
+
+---
+
 ## Fase M1 — Mantenimiento: Node 24
 
 ### Objetivo
@@ -975,8 +1077,8 @@ pero no se puede corregir en Tailwind 3).
 
 ## Fuera del proyecto (por ahora)
 
-Se descartaron al planificar: macros en la interfaz, foto del plato, Apple
-Salud / Health Connect, ejercicio y agua, varios usuarios y publicación en
+Se descartaron al planificar: macros en la interfaz, Apple Salud / Health
+Connect, ejercicio y agua, varios usuarios y publicación en
 tiendas. El modelo de datos no les cierra la puerta.
 
 ## Decisiones pendientes

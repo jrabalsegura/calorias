@@ -1,0 +1,52 @@
+{
+  "file": "Plato de paella (Comunidad Valenciana).jpg",
+  "photo": "https://commons.wikimedia.org/wiki/File:Plato_de_paella_(Comunidad_Valenciana).jpg",
+  "note": "",
+  "answer": {
+    "items": [
+      {
+        "name": "Paella mixta",
+        "amount": 300,
+        "unit": "g",
+        "kcalPer100": 150,
+        "libraryRef": null,
+        "assumption": "plato llano con ración típica de arroz con guisantes, pimiento y judías, ≈ 300 g",
+        "confidence": "medium",
+        "cookingOil": false
+      },
+      {
+        "name": "Carne de pollo y cerdo de la paella",
+        "amount": 120,
+        "unit": "g",
+        "kcalPer100": 190,
+        "libraryRef": null,
+        "assumption": "un muslo de pollo y un trozo de costilla/panceta visibles, sin hueso ≈ 120 g",
+        "confidence": "low",
+        "cookingOil": false
+      },
+      {
+        "name": "Langostino cocinado",
+        "amount": 50,
+        "unit": "g",
+        "kcalPer100": 95,
+        "libraryRef": null,
+        "assumption": "1 langostino grande entero, parte comestible ≈ 50 g",
+        "confidence": "medium",
+        "cookingOil": false
+      },
+      {
+        "name": "Aceite de oliva (cocinado)",
+        "amount": 10,
+        "unit": "g",
+        "kcalPer100": 900,
+        "libraryRef": null,
+        "assumption": "aceite del sofrito que queda en la ración, ≈ 1 cucharada",
+        "confidence": "low",
+        "cookingOil": true
+      }
+    ]
+  },
+  "expected": {
+    "kcal": 816
+  }
+}

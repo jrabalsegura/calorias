@@ -1,0 +1,32 @@
+{
+  "file": "Patatas bravas. Tapa de bar (España).jpg",
+  "photo": "https://commons.wikimedia.org/wiki/File:Patatas_bravas._Tapa_de_bar_(Espa%C3%B1a).jpg",
+  "note": "",
+  "answer": {
+    "items": [
+      {
+        "name": "Patatas bravas (patatas fritas)",
+        "amount": 300,
+        "unit": "g",
+        "kcalPer100": 190,
+        "libraryRef": null,
+        "assumption": "Fuente alargada con unos 25-30 dados de patata, ración generosa para compartir ≈ 300 g",
+        "confidence": "medium",
+        "cookingOil": false
+      },
+      {
+        "name": "Salsa brava",
+        "amount": 50,
+        "unit": "g",
+        "kcalPer100": 300,
+        "libraryRef": null,
+        "assumption": "Salsa rosada cremosa tipo brava con mayonesa que cubre las patatas, unas 3 cucharadas ≈ 50 g",
+        "confidence": "low",
+        "cookingOil": false
+      }
+    ]
+  },
+  "expected": {
+    "kcal": 720
+  }
+}

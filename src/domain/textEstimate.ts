@@ -110,7 +110,7 @@ Reglas:
 4. Usa un alimento de «Mis alimentos» solo cuando la descripción se refiere a él: con «mi», con su marca o con su nombre concreto («pan de molde integral»). Una palabra genérica («pan», «yogur») no basta. Entonces usa su libraryRef, su unidad y sus kcal por 100, y sus porciones para pasar unidades a g o ml.
 5. Si algo no es comida ni bebida, ignóralo. Si no hay nada que estimar, devuelve una lista vacía.`;
 
-function libraryLine(food: LibraryReference): string {
+export function libraryLine(food: LibraryReference): string {
   const name = food.brand ? `${food.name} (${food.brand})` : food.name;
   const portions = food.portions
     .map(({ name: portion, amount }) => `${portion} = ${formatAmount(amount)} ${food.baseUnit}`)
@@ -185,7 +185,8 @@ export type EstimateResult =
  */
 export function parseEstimate(
   raw: unknown,
-  library: readonly LibraryReference[]
+  library: readonly LibraryReference[],
+  emptyError = "No he encontrado ninguna comida en la descripción. Prueba a escribirla de otra forma."
 ): EstimateResult {
   if (!isObject(raw) || !Array.isArray(raw.items)) {
     return { ok: false, error: "La IA no ha devuelto un desglose válido." };
@@ -220,12 +221,7 @@ export function parseEstimate(
     });
   }
 
-  if (items.length === 0) {
-    return {
-      ok: false,
-      error: "No he encontrado ninguna comida en la descripción. Prueba a escribirla de otra forma."
-    };
-  }
+  if (items.length === 0) return { ok: false, error: emptyError };
   return { ok: true, items };
 }
 

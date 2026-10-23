@@ -1,0 +1,82 @@
+{
+  "file": "Plato-combinado-huevo-cebolla-tomate-pimiento-patatas-carne-venta-aurelio-restaurante-chipiona.JPG",
+  "photo": "https://commons.wikimedia.org/wiki/File:Plato-combinado-huevo-cebolla-tomate-pimiento-patatas-carne-venta-aurelio-restaurante-chipiona.JPG",
+  "note": "",
+  "answer": {
+    "items": [
+      {
+        "name": "Chuleta de cerdo a la plancha",
+        "amount": 200,
+        "unit": "g",
+        "kcalPer100": 240,
+        "libraryRef": null,
+        "assumption": "Una pieza grande de aguja o chuleta que ocupa media fuente, cocinada con la grasa visible ≈ 200 g",
+        "confidence": "medium",
+        "cookingOil": false
+      },
+      {
+        "name": "Patatas fritas",
+        "amount": 150,
+        "unit": "g",
+        "kcalPer100": 300,
+        "libraryRef": null,
+        "assumption": "Patatas en gajos bajo la carne, ración media en plato llano ≈ 150 g",
+        "confidence": "medium",
+        "cookingOil": false
+      },
+      {
+        "name": "Huevo a baja temperatura con cebolleta",
+        "amount": 90,
+        "unit": "g",
+        "kcalPer100": 150,
+        "libraryRef": null,
+        "assumption": "Un huevo poco cuajado con clara blanda y cebolleta salteada por encima ≈ 90 g",
+        "confidence": "low",
+        "cookingOil": false
+      },
+      {
+        "name": "Pimientos verdes fritos",
+        "amount": 50,
+        "unit": "g",
+        "kcalPer100": 110,
+        "libraryRef": null,
+        "assumption": "Un puñado de pimientos de Padrón o similares, asados o fritos ≈ 50 g",
+        "confidence": "medium",
+        "cookingOil": false
+      },
+      {
+        "name": "Salsa de tomate",
+        "amount": 50,
+        "unit": "g",
+        "kcalPer100": 90,
+        "libraryRef": null,
+        "assumption": "Una cucharada grande abundante de salsa roja en la parte superior ≈ 50 g",
+        "confidence": "low",
+        "cookingOil": false
+      },
+      {
+        "name": "Pimiento del piquillo o chorizo guisado",
+        "amount": 30,
+        "unit": "g",
+        "kcalPer100": 150,
+        "libraryRef": null,
+        "assumption": "Trozo rojo a la derecha, no se distingue bien qué es ≈ 30 g",
+        "confidence": "low",
+        "cookingOil": false
+      },
+      {
+        "name": "Aceite de oliva (cocinado)",
+        "amount": 10,
+        "unit": "g",
+        "kcalPer100": 900,
+        "libraryRef": null,
+        "assumption": "Aceite restante de la plancha y las cebolletas salteadas ≈ 1 cucharada",
+        "confidence": "low",
+        "cookingOil": true
+      }
+    ]
+  },
+  "expected": {
+    "kcal": 1300
+  }
+}

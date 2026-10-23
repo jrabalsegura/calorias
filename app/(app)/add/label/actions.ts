@@ -1,6 +1,7 @@
 "use server";
 
-import { parseLabelImage, type LabelResult } from "@/domain/label";
+import type { LabelResult } from "@/domain/label";
+import { parsePhoto } from "@/domain/photo";
 import { requireCurrentUser } from "@/lib/auth";
 import { readLabelImage } from "@/lib/labelReading";
 
@@ -8,7 +9,7 @@ import { readLabelImage } from "@/lib/labelReading";
 export async function readLabel(image: { data: string; mediaType: string }): Promise<LabelResult> {
   await requireCurrentUser();
 
-  const parsed = parseLabelImage(image);
+  const parsed = parsePhoto(image);
   if (!parsed.ok) return parsed;
   return readLabelImage(parsed.value);
 }

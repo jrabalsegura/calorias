@@ -1,0 +1,32 @@
+{
+  "file": "Bocadillo de calamares-2009.jpg",
+  "photo": "https://commons.wikimedia.org/wiki/File:Bocadillo_de_calamares-2009.jpg",
+  "note": "solo me como la mitad",
+  "answer": {
+    "items": [
+      {
+        "name": "Calamares a la romana (bocadillo)",
+        "amount": 90,
+        "unit": "g",
+        "kcalPer100": 250,
+        "libraryRef": null,
+        "assumption": "bocadillo de calamares: unos 180 g de anillas rebozadas y fritas, mitad ≈ 90 g",
+        "confidence": "medium",
+        "cookingOil": false
+      },
+      {
+        "name": "Pan de barra",
+        "amount": 65,
+        "unit": "g",
+        "kcalPer100": 265,
+        "libraryRef": null,
+        "assumption": "barra de bocadillo de unos 130 g, mitad ≈ 65 g",
+        "confidence": "medium",
+        "cookingOil": false
+      }
+    ]
+  },
+  "expected": {
+    "kcal": 397
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "file": "Bocadillo de calamares-2009.jpg",
+  "photo": "https://commons.wikimedia.org/wiki/File:Bocadillo_de_calamares-2009.jpg",
+  "note": "",
+  "answer": {
+    "items": [
+      {
+        "name": "Calamares a la romana",
+        "amount": 130,
+        "unit": "g",
+        "kcalPer100": 250,
+        "libraryRef": null,
+        "assumption": "bocadillo de calamares: unos 12-14 anillas rebozadas, ya fritos con el aceite absorbido ≈ 130 g",
+        "confidence": "medium",
+        "cookingOil": false
+      },
+      {
+        "name": "Pan de barra (bocadillo)",
+        "amount": 120,
+        "unit": "g",
+        "kcalPer100": 270,
+        "libraryRef": null,
+        "assumption": "media barra de unos 25 cm, similar al largo del plato ≈ 120 g",
+        "confidence": "medium",
+        "cookingOil": false
+      }
+    ]
+  },
+  "expected": {
+    "kcal": 649
+  }
+}

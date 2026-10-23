@@ -1,0 +1,52 @@
+{
+  "file": "Plato de paella (Comunidad Valenciana).jpg",
+  "photo": "https://commons.wikimedia.org/wiki/File:Plato_de_paella_(Comunidad_Valenciana).jpg",
+  "note": "son unos 200 g de arroz",
+  "answer": {
+    "items": [
+      {
+        "name": "Paella mixta de arroz",
+        "amount": 200,
+        "unit": "g",
+        "kcalPer100": 150,
+        "libraryRef": null,
+        "assumption": "La nota indica unos 200 g de arroz; arroz con guisantes, pimiento y judías verdes cocinado, sin la carne ni el marisco",
+        "confidence": "high",
+        "cookingOil": false
+      },
+      {
+        "name": "Pollo y costilla de cerdo guisados",
+        "amount": 120,
+        "unit": "g",
+        "kcalPer100": 200,
+        "libraryRef": null,
+        "assumption": "Se ven un muslo de pollo y un trozo de costilla; con hueso, la parte comestible es de unos 120 g",
+        "confidence": "medium",
+        "cookingOil": false
+      },
+      {
+        "name": "Langostino cocinado",
+        "amount": 50,
+        "unit": "g",
+        "kcalPer100": 95,
+        "libraryRef": null,
+        "assumption": "Un langostino grande entero con cabeza y cáscara; la parte comestible es de unos 50 g",
+        "confidence": "medium",
+        "cookingOil": false
+      },
+      {
+        "name": "Aceite de oliva (cocinado)",
+        "amount": 10,
+        "unit": "g",
+        "kcalPer100": 900,
+        "libraryRef": null,
+        "assumption": "El brillo del arroz indica que hay sofrito y aceite en la ración; estimo una cucharada sopera",
+        "confidence": "low",
+        "cookingOil": true
+      }
+    ]
+  },
+  "expected": {
+    "kcal": 678
+  }
+}

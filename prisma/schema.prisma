@@ -28,7 +28,7 @@ model DiaryEntry {
   kcal      Int
   foodId    String?
   food      Food?    @relation(fields: [foodId], references: [id], onDelete: SetNull)
-  source    String   @default("manual") // manual | library | barcode | text | label
+  source    String   @default("manual") // manual | library | barcode | text | label | photo
   note      String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -74,7 +74,7 @@ model Food {
   carbsPer100   Float?
   fatPer100     Float?
   imageUrl      String? // product photo of Open Food Facts
-  source        String        @default("manual") // manual | barcode | text | label
+  source        String        @default("manual") // manual | barcode | text | label | photo
   favorite      Boolean       @default(false)
   archived      Boolean       @default(false)
   lastUsedAt    DateTime?
@@ -101,7 +101,7 @@ model FoodPortion {
 model AiCall {
   id           String   @id @default(cuid())
   day          String // YYYY-MM-DD in Europe/Madrid
-  kind         String // text | label
+  kind         String // text | label | photo
   model        String
   inputTokens  Int      @default(0)
   outputTokens Int      @default(0)

@@ -24,11 +24,17 @@ export async function estimateText(description: string): Promise<EstimateResult>
   return estimateMeal(parsed.value);
 }
 
-/** Adds the reviewed lines to the diary as entries with source `text`. */
+/** Where a breakdown came from: a description or a photo of the meal. */
+type EstimateSource = "text" | "photo";
+
+const estimateSource = (source: unknown): EstimateSource => (source === "photo" ? "photo" : "text");
+
+/** Adds the reviewed lines to the diary as entries with source `text` or `photo`. */
 export async function saveTextEntries(values: {
   day: string;
   meal: string;
   lines: TextLineInput[];
+  source: EstimateSource;
 }): Promise<{ error: string } | null> {
   await requireCurrentUser();
 
@@ -49,7 +55,7 @@ export async function saveTextEntries(values: {
   await prisma.$transaction([
     ...parsed.value.map((entry) =>
       prisma.diaryEntry.create({
-        data: { ...entry, day: values.day, meal: values.meal, source: "text" }
+        data: { ...entry, day: values.day, meal: values.meal, source: estimateSource(values.source) }
       })
     ),
     prisma.food.updateMany({ where: { id: { in: linked } }, data: { lastUsedAt: now } })
@@ -68,6 +74,7 @@ export async function saveTextLineAsFood(values: {
   unit: string;
   kcalPer100: number;
   amount: number;
+  source: EstimateSource;
 }): Promise<{ error: string } | { id: string }> {
   await requireCurrentUser();
 
@@ -88,7 +95,7 @@ export async function saveTextLineAsFood(values: {
   const food = await prisma.food.create({
     data: {
       ...data,
-      source: "text",
+      source: estimateSource(values.source),
       portions: {
         create: portions.map((portion, position) => ({ ...portion, position }))
       }
