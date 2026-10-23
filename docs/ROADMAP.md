@@ -1000,6 +1000,12 @@ Decisiones:
   «¿Algo más?» desde una foto añade líneas con texto, que se guardan
   también con origen `photo`.
 - Sin migraciones: `source` y `kind` ya eran texto libre.
+- La misma regla del aceite se aplicó al prompt de *Describir* (fase 7),
+  que también contaba dos veces el aceite de los fritos («2 huevos fritos»:
+  196 kcal/100 de frito más 90 kcal de aceite, 325 → 235 kcal; la tortilla,
+  315 → 285). `scripts/eval-text.ts` pasa de nuevo las 19 descripciones: los
+  fritos van sin línea de aceite, la plancha y los revueltos la conservan y
+  la ensalada mantiene su aliño aparte; el resto, igual que antes.
 
 ---
 
