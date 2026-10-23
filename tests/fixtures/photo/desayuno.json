@@ -1,0 +1,32 @@
+{
+  "file": "Cafe con leche y cruasán.jpg",
+  "photo": "https://commons.wikimedia.org/wiki/File:Cafe_con_leche_y_cruas%C3%A1n.jpg",
+  "note": "",
+  "answer": {
+    "items": [
+      {
+        "name": "Croissant de bollería",
+        "amount": 80,
+        "unit": "g",
+        "kcalPer100": 406,
+        "libraryRef": null,
+        "assumption": "croissant de cafetería grande, algo más largo que el plato pequeño ≈ 80 g",
+        "confidence": "medium",
+        "cookingOil": false
+      },
+      {
+        "name": "Café con leche",
+        "amount": 200,
+        "unit": "ml",
+        "kcalPer100": 35,
+        "libraryRef": null,
+        "assumption": "taza blanca de cafetería llena ≈ 200 ml, con leche y sin azúcar visible",
+        "confidence": "medium",
+        "cookingOil": false
+      }
+    ]
+  },
+  "expected": {
+    "kcal": 395
+  }
+}

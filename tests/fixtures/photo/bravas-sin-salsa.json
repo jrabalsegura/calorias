@@ -1,0 +1,22 @@
+{
+  "file": "Patatas bravas. Tapa de bar (España).jpg",
+  "photo": "https://commons.wikimedia.org/wiki/File:Patatas_bravas._Tapa_de_bar_(Espa%C3%B1a).jpg",
+  "note": "sin la salsa",
+  "answer": {
+    "items": [
+      {
+        "name": "Patatas bravas (solo patatas fritas)",
+        "amount": 250,
+        "unit": "g",
+        "kcalPer100": 190,
+        "libraryRef": null,
+        "assumption": "fuente alargada con unos 20 dados de patata fritos ≈ 250 g; sin la salsa, según la nota",
+        "confidence": "medium",
+        "cookingOil": false
+      }
+    ]
+  },
+  "expected": {
+    "kcal": 475
+  }
+}

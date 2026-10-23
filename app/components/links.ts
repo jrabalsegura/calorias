@@ -24,3 +24,8 @@ export function textHref(day: string, meal: Meal): string {
 export function labelHref(day: string, meal: Meal, barcode?: string | null): string {
   return `/add/label?day=${day}&meal=${meal}${barcode ? `&barcode=${barcode}` : ""}`;
 }
+
+/** The photo-of-the-meal screen for a day and meal. */
+export function photoHref(day: string, meal: Meal): string {
+  return `/add/photo?day=${day}&meal=${meal}`;
+}

@@ -4,46 +4,22 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useTransition } from "react";
 import { formatRelativeDay } from "@/domain/day";
 import type { FoodFormValues } from "@/domain/food";
-import { labelFormValues, scaledSize, type LabelReading } from "@/domain/label";
+import { labelFormValues, type LabelReading } from "@/domain/label";
 import { mealLabel, type Meal } from "@/domain/meals";
 import type { LibraryFood } from "@/lib/foods";
 import { readLabel } from "../(app)/add/label/actions";
 import type { ScannedProductData } from "../(app)/foods/actions";
 import { FoodEntrySheet } from "./FoodEntrySheet";
 import { FoodForm } from "./FoodForm";
-import { CameraIcon } from "./icons";
 import { addHref, diaryHref, labelHref } from "./links";
 import { PageHeader } from "./PageHeader";
+import { PhotoButtons, shrinkPhoto } from "./PhotoButtons";
 
 type View =
   | { kind: "photo"; error: string | null }
   | { kind: "reading" }
   /** `reading` is null when the user writes the label by hand. */
   | { kind: "review"; reading: LabelReading | null };
-
-/**
- * Reduces the photo on the phone (about 1.500 px, JPEG) so it travels
- * light; browsers already apply the EXIF orientation when drawing it.
- */
-async function shrinkPhoto(file: File): Promise<{ data: string; mediaType: "image/jpeg" }> {
-  const url = URL.createObjectURL(file);
-  try {
-    const image = new Image();
-    image.src = url;
-    await image.decode();
-    const { width, height } = scaledSize(image.naturalWidth, image.naturalHeight);
-    const canvas = document.createElement("canvas");
-    canvas.width = width;
-    canvas.height = height;
-    const context = canvas.getContext("2d");
-    if (!context) throw new Error("No 2D canvas");
-    context.drawImage(image, 0, 0, width, height);
-    const dataUrl = canvas.toDataURL("image/jpeg", 0.85);
-    return { data: dataUrl.slice(dataUrl.indexOf(",") + 1), mediaType: "image/jpeg" };
-  } finally {
-    URL.revokeObjectURL(url);
-  }
-}
 
 /**
  * Takes (or picks) a photo of the nutrition label, has the AI read it and
@@ -80,10 +56,7 @@ export function LabelScreen({
   const subtitle = `${formatRelativeDay(day, today)} · ${mealLabel(meal)}`;
   const backHref = addHref(day, meal);
 
-  function onPhoto(event: React.ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0];
-    event.target.value = "";
-    if (!file) return;
+  function onPhoto(file: File) {
     setPreview(URL.createObjectURL(file));
     setView({ kind: "reading" });
     startTransition(async () => {
@@ -231,22 +204,7 @@ export function LabelScreen({
         </div>
       ) : null}
 
-      <label className={`primary-button w-full gap-2 ${reading ? "pointer-events-none opacity-60" : "cursor-pointer"}`}>
-        <CameraIcon />
-        Hacer la foto
-        <input
-          accept="image/*"
-          capture="environment"
-          className="sr-only"
-          disabled={reading}
-          onChange={onPhoto}
-          type="file"
-        />
-      </label>
-      <label className={`secondary-button w-full ${reading ? "pointer-events-none opacity-60" : "cursor-pointer"}`}>
-        Elegir de la galería
-        <input accept="image/*" className="sr-only" disabled={reading} onChange={onPhoto} type="file" />
-      </label>
+      <PhotoButtons disabled={reading} onPhoto={onPhoto} />
     </>
   );
 }

@@ -106,11 +106,11 @@ Cada línea lleva:
 Reglas:
 1. Respeta siempre las cantidades que se indican, convirtiéndolas a g o ml («2 huevos» son unos 120 g, «un vaso» de leche 200 ml). No las cambies aunque te parezcan raras.
 2. Si no hay cantidad, usa la ración típica en España para un adulto y explica el supuesto.
-3. Un plato preparado (lentejas, paella, tortilla de patatas) va en una sola línea con sus kcal por 100 g, sin el aceite añadido al cocinar. El aceite de cocinado va siempre en una línea aparte llamada «Aceite de oliva (cocinado)» o similar, en gramos, con lo que realmente queda en la ración (no todo lo que se usa en la sartén), para que se vea y se pueda quitar. Fritos, guisos, salteados y plancha suelen llevarlo; lo cocido, al horno sin grasa o crudo no.
+3. Un plato preparado (lentejas, paella, macarrones) va en una sola línea con sus kcal por 100 g. Lo frito en abundante aceite (huevos fritos, patatas fritas, tortilla de patatas, rebozados, croquetas) va con sus kcal por 100 g ya frito, que incluyen el aceite que absorbe, y sin línea de aceite. A lo hecho a la plancha, salteado, guisado o con sofrito dale las kcal sin el aceite añadido y pon el aceite que queda en la ración en una línea aparte llamada «Aceite de oliva (cocinado)» o similar, en gramos, para que se vea y se pueda quitar. Lo cocido o al horno sin grasa no lleva aceite de cocinado. El aliño de una ensalada (aceite, vinagreta) y las salsas (mayonesa, alioli, salsa brava) van también en líneas aparte: el aliño, aunque no se diga, porque en España la ensalada se aliña.
 4. Usa un alimento de «Mis alimentos» solo cuando la descripción se refiere a él: con «mi», con su marca o con su nombre concreto («pan de molde integral»). Una palabra genérica («pan», «yogur») no basta. Entonces usa su libraryRef, su unidad y sus kcal por 100, y sus porciones para pasar unidades a g o ml.
 5. Si algo no es comida ni bebida, ignóralo. Si no hay nada que estimar, devuelve una lista vacía.`;
 
-function libraryLine(food: LibraryReference): string {
+export function libraryLine(food: LibraryReference): string {
   const name = food.brand ? `${food.name} (${food.brand})` : food.name;
   const portions = food.portions
     .map(({ name: portion, amount }) => `${portion} = ${formatAmount(amount)} ${food.baseUnit}`)
@@ -185,7 +185,8 @@ export type EstimateResult =
  */
 export function parseEstimate(
   raw: unknown,
-  library: readonly LibraryReference[]
+  library: readonly LibraryReference[],
+  emptyError = "No he encontrado ninguna comida en la descripción. Prueba a escribirla de otra forma."
 ): EstimateResult {
   if (!isObject(raw) || !Array.isArray(raw.items)) {
     return { ok: false, error: "La IA no ha devuelto un desglose válido." };
@@ -220,12 +221,7 @@ export function parseEstimate(
     });
   }
 
-  if (items.length === 0) {
-    return {
-      ok: false,
-      error: "No he encontrado ninguna comida en la descripción. Prueba a escribirla de otra forma."
-    };
-  }
+  if (items.length === 0) return { ok: false, error: emptyError };
   return { ok: true, items };
 }
 

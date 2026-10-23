@@ -1,0 +1,82 @@
+{
+  "file": "Ensalada-mixta-lechuga-huevo-tomates-cebolla-maiz-remolacha-restaurante-chipiona.JPG",
+  "photo": "https://commons.wikimedia.org/wiki/File:Ensalada-mixta-lechuga-huevo-tomates-cebolla-maiz-remolacha-restaurante-chipiona.JPG",
+  "note": "",
+  "answer": {
+    "items": [
+      {
+        "name": "Lechuga",
+        "amount": 100,
+        "unit": "g",
+        "kcalPer100": 15,
+        "libraryRef": null,
+        "assumption": "lechuga iceberg que cubre el fondo de un bol grande de unos 24 cm",
+        "confidence": "medium",
+        "cookingOil": false
+      },
+      {
+        "name": "Tomate",
+        "amount": 80,
+        "unit": "g",
+        "kcalPer100": 22,
+        "libraryRef": null,
+        "assumption": "unas 5 rodajas o gajos de tomate alrededor del bol",
+        "confidence": "medium",
+        "cookingOil": false
+      },
+      {
+        "name": "Maíz dulce en conserva",
+        "amount": 60,
+        "unit": "g",
+        "kcalPer100": 90,
+        "libraryRef": null,
+        "assumption": "unas 4 cucharadas soperas repartidas por la ensalada",
+        "confidence": "medium",
+        "cookingOil": false
+      },
+      {
+        "name": "Zanahoria rallada",
+        "amount": 30,
+        "unit": "g",
+        "kcalPer100": 35,
+        "libraryRef": null,
+        "assumption": "un puñado pequeño repartido por encima",
+        "confidence": "medium",
+        "cookingOil": false
+      },
+      {
+        "name": "Atún en conserva",
+        "amount": 60,
+        "unit": "g",
+        "kcalPer100": 190,
+        "libraryRef": null,
+        "assumption": "unas 6 lascas de atún, como una lata pequeña escurrida, parece al natural",
+        "confidence": "medium",
+        "cookingOil": false
+      },
+      {
+        "name": "Huevo cocido",
+        "amount": 100,
+        "unit": "g",
+        "kcalPer100": 146,
+        "libraryRef": null,
+        "assumption": "2 huevos cocidos cortados en cuartos (se ven 3 cuartos, aprox. 1,5-2 huevos)",
+        "confidence": "medium",
+        "cookingOil": false
+      },
+      {
+        "name": "Remolacha cocida",
+        "amount": 20,
+        "unit": "g",
+        "kcalPer100": 43,
+        "libraryRef": null,
+        "assumption": "pequeño montón rallado en el centro",
+        "confidence": "medium",
+        "cookingOil": false
+      }
+    ]
+  },
+  "expected": {
+    "kcal": 367
+  }
+}

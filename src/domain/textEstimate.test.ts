@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import {
   buildEstimatePrompt,
+  ESTIMATE_SYSTEM_PROMPT,
   MAX_ESTIMATE_ITEMS,
   numberLibrary,
   parseDescription,
@@ -190,4 +191,10 @@ test("reviewed lines reject what cannot be saved", () => {
   assert.equal(parseTextLines([{ ...line, kcalPer100: 901 }], none).ok, false);
   assert.equal(parseTextLines([{ ...line, amount: "5000", kcalPer100: 900 }], none).ok, false);
   assert.equal(parseTextLines(Array(MAX_ESTIMATE_ITEMS + 1).fill(line), none).ok, false);
+});
+
+test("fried food carries its own oil; grilled food and salads get an oil line", () => {
+  assert.match(ESTIMATE_SYSTEM_PROMPT, /huevos fritos[^.]*ya frito, que incluyen el aceite/);
+  assert.match(ESTIMATE_SYSTEM_PROMPT, /plancha, salteado, guisado[^.]*línea aparte/);
+  assert.match(ESTIMATE_SYSTEM_PROMPT, /aliño de una ensalada[^.]*líneas aparte/);
 });

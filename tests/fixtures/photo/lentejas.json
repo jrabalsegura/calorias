@@ -1,0 +1,22 @@
+{
+  "file": "Lentejas estilo de la abuela.jpg",
+  "photo": "https://commons.wikimedia.org/wiki/File:Lentejas_estilo_de_la_abuela.jpg",
+  "note": "",
+  "answer": {
+    "items": [
+      {
+        "name": "Lentejas con chorizo, morcilla y panceta",
+        "amount": 350,
+        "unit": "g",
+        "kcalPer100": 125,
+        "libraryRef": null,
+        "assumption": "plato hondo de ración normal, primer plano sin escala clara; lentejas estofadas con chorizo, morcilla y panceta ≈ 350 g",
+        "confidence": "medium",
+        "cookingOil": false
+      }
+    ]
+  },
+  "expected": {
+    "kcal": 438
+  }
+}

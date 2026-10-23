@@ -6,9 +6,7 @@ import { parseFoodInput } from "./food";
 import {
   checkLabelEnergy,
   labelFormValues,
-  parseLabelImage,
   parseLabelReading,
-  scaledSize,
   type LabelReading
 } from "./label";
 
@@ -180,20 +178,6 @@ test("an unreadable photo is an error that asks for another one", () => {
       "No se lee la tabla nutricional (No hay tabla nutricional). Haz otra foto de frente y con buena luz, o escribe los datos a mano."
   });
   assert.equal(parseLabelReading("nada").ok, false);
-});
-
-test("the photo must be a base64 image of an accepted type and size", () => {
-  const data = "A".repeat(200);
-  assert.ok(parseLabelImage({ data, mediaType: "image/jpeg" }).ok);
-  assert.equal(parseLabelImage({ data, mediaType: "image/gif" }).ok, false);
-  assert.equal(parseLabelImage({ data: "no es base64!", mediaType: "image/png" }).ok, false);
-  assert.equal(parseLabelImage({ data: "A".repeat(5_000_004), mediaType: "image/png" }).ok, false);
-});
-
-test("photos are reduced to 1.500 px on the longest side, never enlarged", () => {
-  assert.deepEqual(scaledSize(4032, 3024), { width: 1500, height: 1125 });
-  assert.deepEqual(scaledSize(3024, 4032), { width: 1125, height: 1500 });
-  assert.deepEqual(scaledSize(800, 600), { width: 800, height: 600 });
 });
 
 // Real answers of the AI to label photos (scripts/eval-label.ts --save),

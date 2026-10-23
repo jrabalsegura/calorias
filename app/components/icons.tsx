@@ -129,6 +129,15 @@ export function CameraIcon() {
   );
 }
 
+export function PlateIcon() {
+  return (
+    <Icon>
+      <circle cx="12" cy="12" r="8" />
+      <circle cx="12" cy="12" r="4.5" />
+    </Icon>
+  );
+}
+
 export function BookmarkIcon({ className }: { className?: string }) {
   return (
     <Icon className={className}>

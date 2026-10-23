@@ -1,0 +1,32 @@
+{
+  "file": "Macarrones con tomate y queso.jpg",
+  "photo": "https://commons.wikimedia.org/wiki/File:Macarrones_con_tomate_y_queso.jpg",
+  "note": "",
+  "answer": {
+    "items": [
+      {
+        "name": "Macarrones con tomate",
+        "amount": 280,
+        "unit": "g",
+        "kcalPer100": 150,
+        "libraryRef": null,
+        "assumption": "plato llano con ración media de penne cocidos con salsa de tomate ≈ 280 g",
+        "confidence": "medium",
+        "cookingOil": false
+      },
+      {
+        "name": "Queso rallado",
+        "amount": 15,
+        "unit": "g",
+        "kcalPer100": 390,
+        "libraryRef": null,
+        "assumption": "capa generosa de queso rallado por encima ≈ 15 g",
+        "confidence": "medium",
+        "cookingOil": false
+      }
+    ]
+  },
+  "expected": {
+    "kcal": 479
+  }
+}
