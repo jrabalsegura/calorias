@@ -11,7 +11,7 @@ import {
   summarizePeriod,
   type PeriodSummary
 } from "@/domain/summary";
-import { calculateTarget, formatKg } from "@/domain/target";
+import { calculateTarget, formatKg, targetOn } from "@/domain/target";
 import { weightTrend } from "@/domain/weight";
 import { requireCurrentUser } from "@/lib/auth";
 import { loadProfile, loadWeighIns } from "@/lib/profile";
@@ -41,8 +41,9 @@ export default async function SummaryPage({
     loadCheckInHistory()
   ]);
   const days = indexDays(records);
-  // Every day is measured against the current target, as in Hoy.
-  const target = profile ? calculateTarget({ ...profile, today }).target : null;
+  // Every day is measured against the current target (maintenance on rest days), as in Hoy.
+  const result = profile ? calculateTarget({ ...profile, today }) : null;
+  const target = result ? (day: string) => targetOn(result, day) : null;
   const checkIn = await loadCheckInState(today, { profile, days, weighIns });
 
   const yesterday = addDays(today, -1);

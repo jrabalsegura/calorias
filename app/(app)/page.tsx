@@ -7,6 +7,7 @@ import { sumDiary } from "@/domain/diary";
 import { isDayMark } from "@/domain/summary";
 import { requireCurrentUser } from "@/lib/auth";
 import { foodSelect, toLibraryFood } from "@/lib/foods";
+import { isRestDay, targetOn } from "@/domain/target";
 import { loadTarget } from "@/lib/profile";
 import { prisma } from "@/lib/prisma";
 import { loadCheckInState } from "@/lib/summary";
@@ -39,7 +40,8 @@ export default async function TodayPage({
         food: { select: foodSelect }
       }
     }),
-    // Every day is measured against the current target (no history yet).
+    // Every day is measured against the current target (no history yet),
+    // with maintenance on rest days.
     loadTarget(today),
     prisma.diaryDay.findUnique({ where: { day }, select: { status: true } }),
     day === today ? loadCheckInState(today) : null
@@ -64,7 +66,8 @@ export default async function TodayPage({
           ...entry,
           food: food ? toLibraryFood(food) : null
         }))}
-        goalKcal={goal?.target.target ?? null}
+        goalKcal={goal ? targetOn(goal.target, day) : null}
+        restDay={isRestDay(day)}
         totals={totals}
       />
       <DayCompleteness

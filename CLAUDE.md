@@ -41,7 +41,10 @@ Un test concreto: `node --import tsx --test --test-name-pattern "session" tests/
 - Objetivo calórico: cálculos en `src/domain/target.ts`; `src/lib/profile.ts`
   carga el `Profile` (fila única) con el peso de tendencia.
   `/settings/profile` es el asistente inicial (sin perfil) y el editor desde
-  *Ajustes*; *Hoy* muestra consumidas / objetivo / restantes.
+  *Ajustes*; *Hoy* muestra consumidas / objetivo / restantes. Viernes y
+  sábado son días de descanso (`REST_WEEKDAYS`): su objetivo es el
+  mantenimiento (`targetOn`), y la pérdida esperada solo cuenta el déficit
+  de los otros cinco días.
 - Peso (`/weight`): un `WeightEntry` por día; tendencia, ritmo real y rangos
   de la gráfica (SVG propio) en `src/domain/weight.ts`.
 - Diario (*Hoy*): `/` muestra hoy y `/?day=YYYY-MM-DD` otro día.

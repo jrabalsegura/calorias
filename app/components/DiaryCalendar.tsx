@@ -7,6 +7,7 @@ import {
   formatMonth,
   monthGrid,
   type DayIndex,
+  type DayTarget,
   type DayTone
 } from "@/domain/summary";
 import { diaryHref } from "./links";
@@ -40,7 +41,7 @@ export function DiaryCalendar({
 }: {
   month: string;
   days: DayIndex;
-  target: number | null;
+  target: DayTarget;
   today: string;
 }) {
   const previous = addMonths(month, -1);
@@ -94,7 +95,7 @@ export function DiaryCalendar({
               );
             }
             const record = days.get(day);
-            const tone = dayTone(record, target);
+            const tone = dayTone(record, target === null ? null : target(day));
             return (
               <Link
                 aria-label={`${formatLongDay(day, today)}: ${

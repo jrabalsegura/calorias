@@ -5,10 +5,13 @@ import { dayProgress } from "@/domain/target";
 /** Consumed / target / remaining for the day, or the plain total without a goal. */
 export function DayGoal({
   consumed,
-  target
+  target,
+  restDay = false
 }: {
   consumed: number;
   target: number | null;
+  /** Rest day: the target is maintenance. */
+  restDay?: boolean;
 }) {
   if (target === null) {
     return (
@@ -39,7 +42,7 @@ export function DayGoal({
     >
       <dl className="grid grid-cols-3 text-center">
         <Figure label="Consumidas" value={progress.consumed} />
-        <Figure label="Objetivo" value={progress.target} />
+        <Figure label={restDay ? "Mantenimiento" : "Objetivo"} value={progress.target} />
         <Figure
           emphasis
           label={progress.over ? "Te has pasado" : "Restantes"}

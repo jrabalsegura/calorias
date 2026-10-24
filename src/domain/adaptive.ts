@@ -167,7 +167,7 @@ export function proposeTarget(input: TargetInput, tdee: number): TargetResult {
   return calculateTarget({ ...input, manualTargetKcal: null, adaptiveTdee: tdee });
 }
 
-/** "Tu gasto estimado es X kcal; para seguir a 0,5 kg/semana, tu objetivo pasaría a Y kcal." */
+/** "Tu gasto estimado es X kcal; para bajar unos 0,36 kg/semana, tu objetivo pasaría a Y kcal; …" */
 export function checkInMessage(
   tdee: number,
   proposal: TargetResult,
@@ -178,10 +178,15 @@ export function checkInMessage(
   const goal =
     kgPerWeek === 0
       ? "para mantener tu peso"
-      : `para seguir a ${formatKg(kgPerWeek)} kg/semana`;
+      : // The real loss: the rest days are eaten at maintenance.
+        `para bajar unos ${formatKg(proposal.kgPerWeek)} kg/semana`;
   const outcome =
     proposal.target === currentTarget
       ? `tu objetivo se queda en ${formatKcal(proposal.target)} kcal`
       : `tu objetivo pasaría de ${formatKcal(currentTarget)} a ${formatKcal(proposal.target)} kcal`;
-  return `Tu gasto estimado es de ${formatKcal(tdee)} kcal al día; ${goal}, ${outcome}.`;
+  const rest =
+    proposal.restTarget === proposal.target
+      ? ""
+      : `; viernes y sábado, ${formatKcal(proposal.restTarget)} kcal de mantenimiento`;
+  return `Tu gasto estimado es de ${formatKcal(tdee)} kcal al día; ${goal}, ${outcome}${rest}.`;
 }

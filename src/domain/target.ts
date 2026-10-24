@@ -1,4 +1,4 @@
-import { addDays, isValidDay } from "./day";
+import { addDays, isValidDay, weekdayIndex } from "./day";
 import { formatKcal } from "./diary";
 
 // Energy in one kilogram of body fat, the usual rule of thumb.
@@ -54,6 +54,16 @@ export const PACES = [
 ] as const;
 
 export type Pace = (typeof PACES)[number]["id"];
+
+/** Rest days (0 = Monday): Friday and Saturday aim at maintenance, not at the deficit. */
+export const REST_WEEKDAYS: readonly number[] = [4, 5];
+
+/** Days a week the deficit applies. */
+export const DEFICIT_DAYS_PER_WEEK = 7 - REST_WEEKDAYS.length;
+
+export function isRestDay(day: string): boolean {
+  return REST_WEEKDAYS.includes(weekdayIndex(day));
+}
 
 /** Safety floor: the target never goes below this. */
 export const MIN_TARGET_KCAL: Record<Sex, number> = { female: 1200, male: 1500 };
@@ -138,13 +148,18 @@ export type TargetResult = {
   requestedDeficit: number;
   /** Formula target after the safety floor. */
   recommended: number;
-  /** What the day is measured against: the manual target if set. */
+  /** What a deficit day is measured against: the manual target if set. */
   target: number;
+  /** Target of the rest days (Friday and Saturday): the maintenance expenditure. */
+  restTarget: number;
   isManual: boolean;
   minimum: number;
   /** The formula target was raised to the safety floor. */
   floorApplied: boolean;
-  /** Expected loss with the final target, kg/week (0 or less: no loss). */
+  /**
+   * Expected loss with the final target and maintenance on the rest days,
+   * kg/week (0 or less: no loss).
+   */
   kgPerWeek: number;
   /** The expected loss is above 1 % of body weight per week. */
   paceTooFast: boolean;
@@ -177,11 +192,13 @@ export function calculateTarget(input: TargetInput): TargetResult {
   const isManual = input.manualTargetKcal !== null;
   const target = input.manualTargetKcal ?? recommended;
 
-  const deficit = tdee - target;
+  // Average daily deficit: rest days are eaten at maintenance.
+  const deficit = ((tdee - target) * DEFICIT_DAYS_PER_WEEK) / 7;
   const kgPerWeek = Math.round(((deficit * 7) / KCAL_PER_KG) * 100) / 100;
   const paceTooFast = kgPerWeek > input.weightKg * MAX_WEEKLY_LOSS_RATIO;
   const toLose = input.weightKg - input.targetWeightKg;
   const sexLabel = input.sex === "male" ? "hombres" : "mujeres";
+  const paceLoss = Math.round(((pace.kgPerWeek * DEFICIT_DAYS_PER_WEEK) / 7) * 100) / 100;
 
   if (isManual) {
     if (target < minimum) {
@@ -195,7 +212,7 @@ export function calculateTarget(input: TargetInput): TargetResult {
         `por debajo del mínimo de ${formatKcal(minimum)} kcal para ${sexLabel}. ` +
         `El objetivo se queda en ${formatKcal(minimum)} kcal, ` +
         (kgPerWeek > 0
-          ? `así que bajarás unos ${formatKg(kgPerWeek)} kg por semana en lugar de ${formatKg(pace.kgPerWeek)}.`
+          ? `así que bajarás unos ${formatKg(kgPerWeek)} kg por semana en lugar de ${formatKg(paceLoss)}.`
           : "así que con tu gasto actual no habrá déficit.")
     );
   }
@@ -230,6 +247,7 @@ export function calculateTarget(input: TargetInput): TargetResult {
     requestedDeficit,
     recommended,
     target,
+    restTarget: tdee,
     isManual,
     minimum,
     floorApplied,
@@ -238,6 +256,11 @@ export function calculateTarget(input: TargetInput): TargetResult {
     estimatedDate,
     notes
   };
+}
+
+/** What a given day is measured against. */
+export function targetOn(result: Pick<TargetResult, "target" | "restTarget">, day: string): number {
+  return isRestDay(day) ? result.restTarget : result.target;
 }
 
 export type DayProgress = {

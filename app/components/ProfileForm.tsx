@@ -12,6 +12,7 @@ import {
   PACES,
   parseProfileInput,
   SEXES,
+  targetOn,
   type ProfileFormValues
 } from "@/domain/target";
 import { saveProfile } from "../(app)/settings/actions";
@@ -58,7 +59,7 @@ export function ProfileForm({
   };
   const parsed = parseProfileInput(submitted, today);
   const preview = parsed.ok ? calculateTarget({ ...parsed.value, today, adaptiveTdee }) : null;
-  const progress = preview ? dayProgress(consumedToday, preview.target) : null;
+  const progress = preview ? dayProgress(consumedToday, targetOn(preview, today)) : null;
 
   const visibleSteps = wizard ? [STEPS[step]] : STEPS;
   const isLastStep = !wizard || step === STEPS.length - 1;

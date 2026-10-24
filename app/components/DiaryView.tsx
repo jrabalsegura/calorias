@@ -30,13 +30,16 @@ export function DiaryView({
   day,
   entries,
   totals,
-  goalKcal
+  goalKcal,
+  restDay
 }: {
   day: string;
   entries: DiaryViewEntry[];
   totals: DiaryTotals;
   /** Daily kcal target, or null until the profile is filled in. */
   goalKcal: number | null;
+  /** Friday or Saturday: the goal is maintenance. */
+  restDay: boolean;
 }) {
   const router = useRouter();
   const [target, setTarget] = useState<SheetTarget | null>(null);
@@ -61,7 +64,7 @@ export function DiaryView({
 
   return (
     <>
-      <DayGoal consumed={totals.total} target={goalKcal} />
+      <DayGoal consumed={totals.total} restDay={restDay} target={goalKcal} />
 
       {MEALS.map(({ id: meal, label }) => {
         const mealEntries = entries.filter((entry) => entry.meal === meal);

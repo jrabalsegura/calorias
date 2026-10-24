@@ -50,6 +50,9 @@ export function dayTone(record: DayRecord | undefined, target: number | null): D
 
 export type DayIndex = ReadonlyMap<string, DayRecord>;
 
+/** The target of each day (rest days have their own), or null without a profile. */
+export type DayTarget = ((day: string) => number) | null;
+
 export function indexDays(records: readonly DayRecord[]): DayIndex {
   return new Map(records.map((record) => [record.day, record]));
 }
@@ -69,7 +72,7 @@ export function summarizePeriod(
   days: DayIndex,
   from: string,
   to: string,
-  target: number | null
+  target: DayTarget
 ): PeriodSummary {
   let countedDays = 0;
   let incompleteDays = 0;
@@ -86,7 +89,7 @@ export function summarizePeriod(
     }
     countedDays += 1;
     total += record!.kcal;
-    if (target !== null && record!.kcal <= target) within += 1;
+    if (target !== null && record!.kcal <= target(day)) within += 1;
   }
 
   return {
@@ -119,7 +122,7 @@ export function recentWeeks(
   trend: readonly TrendPoint[],
   today: string,
   count: number,
-  target: number | null
+  target: DayTarget
 ): WeekSummary[] {
   const yesterday = addDays(today, -1);
   const thisWeek = weekStart(today);
