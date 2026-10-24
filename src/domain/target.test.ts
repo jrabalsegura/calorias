@@ -6,7 +6,9 @@ import {
   calculateTarget,
   dailyDeficit,
   dayProgress,
+  isRestDay,
   parseProfileInput,
+  targetOn,
   type TargetInput
 } from "./target";
 
@@ -61,11 +63,13 @@ test("a typical man: basal × activity − deficit, with an estimated date", () 
   assert.equal(result.requestedDeficit, 550);
   assert.equal(result.recommended, 2325);
   assert.equal(result.target, 2325);
-  assert.equal(result.kgPerWeek, 0.5);
+  assert.equal(result.restTarget, 2875);
+  // 550 kcal five days a week: 2.750 / 7.700 = 0,357 kg/week.
+  assert.equal(result.kgPerWeek, 0.36);
   assert.equal(result.floorApplied, false);
   assert.equal(result.paceTooFast, false);
-  // 10 kg × 7.700 / 550 = 140 days
-  assert.equal(result.estimatedDate, "2027-02-25");
+  // 10 kg × 7.700 / (2.750 / 7) = 196 days
+  assert.equal(result.estimatedDate, addDaysForTest(196));
   assert.deepEqual(result.notes, []);
 });
 
@@ -97,13 +101,13 @@ test("a woman below 1.200 kcal is raised to the floor and told why", () => {
   assert.equal(result.tdee, 1547);
   assert.equal(result.floorApplied, true);
   assert.equal(result.target, 1200);
-  // Real deficit 347 kcal → 347 × 7 / 7.700 = 0,315 kg/week.
-  assert.equal(result.kgPerWeek, 0.32);
-  // 5 kg × 7.700 / 347 = 110,95 → 111 days.
-  assert.equal(result.estimatedDate, "2027-01-27");
+  // Real deficit 347 kcal five days a week → 347 × 5 / 7.700 = 0,225 kg/week.
+  assert.equal(result.kgPerWeek, 0.23);
+  // 5 kg × 7.700 / (347 × 5 / 7) = 155,3 → 156 days.
+  assert.equal(result.estimatedDate, addDaysForTest(156));
   assert.deepEqual(result.notes, [
     "Con el ritmo rápido te tocarían 722 kcal, por debajo del mínimo de 1.200 kcal para mujeres. " +
-      "El objetivo se queda en 1.200 kcal, así que bajarás unos 0,32 kg por semana en lugar de 0,75."
+      "El objetivo se queda en 1.200 kcal, así que bajarás unos 0,23 kg por semana en lugar de 0,54."
   ]);
 });
 
@@ -156,12 +160,13 @@ test("a pace above 1 % of body weight per week warns but is kept", () => {
     activity: "veryActive",
     pace: "fast",
     targetWeightKg: 52,
-    manualTargetKcal: null,
+    manualTargetKcal: 1200,
     today: TODAY
   });
 
-  assert.equal(result.target, 1636);
-  assert.equal(result.kgPerWeek, 0.75); // > 0,55 kg (1 % of 55)
+  assert.equal(result.target, 1200);
+  // 1.261 kcal five days a week → 0,82 kg > 0,55 kg (1 % of 55).
+  assert.equal(result.kgPerWeek, 0.82);
   assert.equal(result.paceTooFast, true);
   assert.match(result.notes[0], /más del 1 % de tu peso/);
 });
@@ -193,9 +198,9 @@ test("a manual target replaces the formula and drives the date", () => {
   assert.equal(result.isManual, true);
   assert.equal(result.recommended, 2325);
   assert.equal(result.target, 2000);
-  // 875 kcal/day → 0,795 kg/week; 77.000 / 875 = 88 days.
-  assert.equal(result.kgPerWeek, 0.8);
-  assert.equal(result.estimatedDate, addDaysForTest(88));
+  // 875 kcal five days a week → 0,568 kg/week; 77.000 / 625 = 123,2 → 124 days.
+  assert.equal(result.kgPerWeek, 0.57);
+  assert.equal(result.estimatedDate, addDaysForTest(124));
   assert.deepEqual(result.notes, []);
 });
 
@@ -319,9 +324,24 @@ test("an adaptive expenditure replaces the formula and keeps the safety floor", 
   assert.equal(adaptive.tdeeIsAdaptive, true);
   assert.equal(formula.tdeeIsAdaptive, false);
   assert.equal(adaptive.target, 1850);
-  assert.equal(adaptive.kgPerWeek, 0.5);
+  assert.equal(adaptive.kgPerWeek, 0.36);
+  assert.equal(adaptive.restTarget, 2400);
 
   const low = calculateTarget({ ...MAN, adaptiveTdee: 1800 });
   assert.equal(low.target, 1500);
   assert.equal(low.floorApplied, true);
+});
+
+test("Friday and Saturday are rest days measured against maintenance", () => {
+  // 8 Oct 2026 is a Thursday.
+  assert.deepEqual(
+    ["2026-10-08", "2026-10-09", "2026-10-10", "2026-10-11", "2026-10-12"].map(isRestDay),
+    [false, true, true, false, false]
+  );
+
+  const result = calculateTarget({ ...MAN, manualTargetKcal: 2000 });
+  assert.equal(targetOn(result, "2026-10-08"), 2000);
+  assert.equal(targetOn(result, "2026-10-09"), 2875);
+  assert.equal(targetOn(result, "2026-10-10"), 2875);
+  assert.equal(targetOn(result, "2026-10-11"), 2000);
 });

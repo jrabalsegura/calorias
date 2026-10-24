@@ -255,11 +255,11 @@ test("the check-in message says the estimate and the new target", () => {
   const proposal = proposeTarget(MAN, 2440);
   assert.equal(
     checkInMessage(2440, proposal, "moderate", 1750),
-    "Tu gasto estimado es de 2.440 kcal al día; para seguir a 0,5 kg/semana, tu objetivo pasaría de 1.750 a 1.890 kcal."
+    "Tu gasto estimado es de 2.440 kcal al día; para bajar unos 0,36 kg/semana, tu objetivo pasaría de 1.750 a 1.890 kcal; viernes y sábado, 2.440 kcal de mantenimiento."
   );
   assert.equal(
     checkInMessage(2440, proposal, "moderate", 1890),
-    "Tu gasto estimado es de 2.440 kcal al día; para seguir a 0,5 kg/semana, tu objetivo se queda en 1.890 kcal."
+    "Tu gasto estimado es de 2.440 kcal al día; para bajar unos 0,36 kg/semana, tu objetivo se queda en 1.890 kcal; viernes y sábado, 2.440 kcal de mantenimiento."
   );
   assert.match(
     checkInMessage(2440, proposeTarget({ ...MAN, pace: "maintain" }, 2440), "maintain", 2300),

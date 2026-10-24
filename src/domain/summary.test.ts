@@ -54,13 +54,13 @@ test("period averages only use counted days", () => {
     record("2026-10-06", 1800),
     record("2026-09-30", 9000)
   ]);
-  assert.deepEqual(summarizePeriod(days, "2026-10-01", "2026-10-07", 1800), {
+  assert.deepEqual(summarizePeriod(days, "2026-10-01", "2026-10-07", () => 1800), {
     countedDays: 3,
     incompleteDays: 2,
     averageKcal: 1800,
     withinTarget: 2
   });
-  assert.deepEqual(summarizePeriod(days, "2026-10-08", "2026-10-14", 1800), {
+  assert.deepEqual(summarizePeriod(days, "2026-10-08", "2026-10-14", () => 1800), {
     countedDays: 0,
     incompleteDays: 0,
     averageKcal: null,
@@ -84,7 +84,7 @@ test("recent weeks go Monday to Sunday, newest first, without today", () => {
     { day: "2026-09-28", kg: 89 },
     { day: "2026-10-06", kg: 88 }
   ]);
-  const weeks = recentWeeks(days, trend, today, 3, 1800);
+  const weeks = recentWeeks(days, trend, today, 3, () => 1800);
 
   assert.deepEqual(
     weeks.map(({ weekStart, weekEnd }) => [weekStart, weekEnd]),

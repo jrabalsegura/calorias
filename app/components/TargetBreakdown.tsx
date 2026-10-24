@@ -30,6 +30,11 @@ export function TargetBreakdown({
           {formatKcal(result.target)}
           <span className="ml-1 text-lg font-medium text-muted">kcal</span>
         </p>
+        {result.restTarget !== result.target ? (
+          <p className="text-sm text-muted">
+            Viernes y sábado, descanso: {formatKcal(result.restTarget)} kcal (mantenimiento)
+          </p>
+        ) : null}
       </div>
 
       <dl className="grid gap-1 text-sm">
